@@ -41,6 +41,10 @@ public class OceanoRepositoryImpl implements OceanoRepository {
     @Inject
     MongoClient mongoClient;
 // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Supplier">
+    @Inject
+    OceanoSupplier oceanoSupplier;
+// </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="List<Oceano> findAll()">
 
@@ -66,7 +70,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
             try {
                 while (cursor.hasNext()) {
                
-                    list.add(OceanoSupplier.get(Oceano::new,cursor.next()));
+                    list.add(oceanoSupplier.get(Oceano::new,cursor.next()));
                 }
             } finally {
                 cursor.close();
@@ -87,7 +91,7 @@ Test.error(Test.nameOfClassAndMethod() + " "+e.getLocalizedMessage());
             MongoCollection<Document> collection = database.getCollection("oceano");
             Document doc = collection.find(eq("idoceano", id)).first();
            
-            Oceano oceano = OceanoSupplier.get(Oceano::new,doc);
+            Oceano oceano = oceanoSupplier.get(Oceano::new,doc);
 
             return Optional.of(oceano);
         } catch (Exception e) {

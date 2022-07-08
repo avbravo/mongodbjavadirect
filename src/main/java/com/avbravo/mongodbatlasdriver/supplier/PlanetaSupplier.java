@@ -5,10 +5,12 @@
 package com.avbravo.mongodbatlasdriver.supplier;
 
 import com.avbravo.jmoordb.core.lookup.enumerations.LookupSupplierLevel;
+import com.avbravo.jmoordb.core.util.ConsoleUtil;
 import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Planeta;
-import java.util.List;
+import java.io.Serializable;
 import java.util.function.Supplier;
+import javax.enterprise.context.RequestScoped;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import org.bson.Document;
@@ -17,7 +19,8 @@ import org.bson.Document;
  *
  * @author avbravo
  */
-public class PlanetaSupplier {
+@RequestScoped 
+public class PlanetaSupplier implements Serializable{
     // <editor-fold defaultstate="collapsed" desc="level">
         LookupSupplierLevel levelLocal= LookupSupplierLevel.ZERO;
 // </editor-fold>
@@ -38,7 +41,7 @@ public class PlanetaSupplier {
      * @param document
      * @return
      */
-    public static Planeta get(Supplier<? extends Planeta> s, Document document) {
+    public  Planeta get(Supplier<? extends Planeta> s, Document document) {
         Planeta planeta = s.get();
         try {
             /**
@@ -54,7 +57,7 @@ public class PlanetaSupplier {
              *   Planeta
              * 
              */ 
-            
+            ConsoleUtil.info(Test.nameOfClassAndMethod() +" Dpcument "+document.toJson());
             Jsonb jsonb = JsonbBuilder.create();
             planeta = jsonb.fromJson(document.toJson(), Planeta.class);
         } catch (Exception e) {
@@ -64,42 +67,5 @@ public class PlanetaSupplier {
 
     }
 // </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="Planeta get(Supplier<? extends Planeta> s,List<Document> documentList)">
 
-    /**
-     * Como es una clase que no tiene padres se puede implmentar JSON-B para
-     * convertirlo directamente a Objeto.
-     *Se invoca desde otro Supplier de nivel superior
-     *
-     *
-     * @param s
-     * @param documentList
-     * @return
-     */
-    public static Planeta get(Supplier<? extends Planeta> s, List<Document> documentList) {
-        Planeta planeta = s.get();
-        try {
-            Document document = documentList.get(0);
-             /**
-             * Entidad: Planeta
-             * Planeta{
-             *    // No tiene embedded ni @Referenced
-             * }
-             * 
-             * Nivel de Trabajo : 0
-             * 
-             * Esquema de Niveles:
-             * | Nivel 0|
-             *   Planeta
-             * 
-             */ 
-            Jsonb jsonb = JsonbBuilder.create();
-            planeta = jsonb.fromJson(document.toJson(), Planeta.class);
-        } catch (Exception e) {
-          Test.error(Test.nameOfClassAndMethod() + " "+e.getLocalizedMessage());
-        }
-        return planeta;
-
-    }
-// </editor-fold>
 }

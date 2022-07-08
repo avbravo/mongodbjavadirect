@@ -42,6 +42,10 @@ public class PlanetaRepositoryImpl implements PlanetaRepository {
     @Inject
     MongoClient mongoClient;
 // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="@Supplier">
+    @Inject
+    PlanetaSupplier planetaSupplier;
+// </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="List<Planeta> findAll()">
 
@@ -54,7 +58,7 @@ public class PlanetaRepositoryImpl implements PlanetaRepository {
             MongoDatabase database = mongoClient.getDatabase("world");
      
             MongoCollection<Document> collection = database.getCollection("planeta");
-    /**
+            /**
              * Es una entidad de nivel 0
              * LookupSupplier.ZERO no usa lookup
              * 
@@ -64,7 +68,7 @@ public class PlanetaRepositoryImpl implements PlanetaRepository {
             Jsonb jsonb = JsonbBuilder.create();
             try {
                 while (cursor.hasNext()) {
-                    Planeta planeta = PlanetaSupplier.get(Planeta::new,cursor.next());                   
+                    Planeta planeta = planetaSupplier.get(Planeta::new,cursor.next());                   
                     list.add(planeta);
                 }
             } finally {
@@ -91,7 +95,7 @@ public class PlanetaRepositoryImpl implements PlanetaRepository {
              */
             Document doc = collection.find(eq("idplaneta", id)).first();
            
-            Planeta planeta = PlanetaSupplier.get(Planeta::new,doc);
+            Planeta planeta = planetaSupplier.get(Planeta::new,doc);
 
             return Optional.of(planeta);
         } catch (Exception e) {

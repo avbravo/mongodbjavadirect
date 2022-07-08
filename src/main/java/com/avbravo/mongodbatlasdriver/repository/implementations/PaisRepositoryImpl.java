@@ -37,8 +37,9 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @ApplicationScoped
 //@Stateless
 public class PaisRepositoryImpl implements PaisRepository {
+
     // <editor-fold defaultstate="collapsed" desc="level">
-        LookupSupplierLevel levelLocal= LookupSupplierLevel.ONE;
+    LookupSupplierLevel levelLocal = LookupSupplierLevel.ONE;
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="  @Inject">
     @Inject
@@ -51,6 +52,10 @@ public class PaisRepositoryImpl implements PaisRepository {
     @Inject
     MongoClient mongoClient;
 // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Supplier">
+    @Inject
+    PaisSupplier paisSupplier;
+// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="  public List<Pais> findAll() {">
     @Override
@@ -60,170 +65,16 @@ public class PaisRepositoryImpl implements PaisRepository {
         try {
             MongoDatabase database = mongoClient.getDatabase("world");
             MongoCollection<Document> collection = database.getCollection("pais");
-            
-            /**
-             * PAIS es de nivel 1
-             * Nivel 1    Nivel 0
-             * Pais    -->Planeta
-             * Pais    -->Oceano
-             */
-            /**
-             * Analiza las referencias
-             */
-            /**
-             *
-             * @Referenced(from = "planeta",localField =
-             * "idplaneta",foreignField = "idplaneta",as ="planeta") private
-             * Planeta planeta;
-             */
-//             Bson pipeline = lookup("planeta", "planeta.idplaneta", "idplaneta", "planeta");
-
-            /**
-             * Aqui lee la entidad Pais y busca todas las references
-             *
-             * @Referenced(from = "planeta",localField =
-             * "idplaneta",foreignField = "idplaneta",as ="planeta") private
-             * Planeta planeta;
-             *
-             * Encontro Planeta asi que obtiene la clase y la referencia
-             *
-             */
-            Referenced planetaReferenced = new Referenced() {
-                @Override
-                public String from() {
-                    return "planeta";
-                }
-
-                @Override
-                public String localField() {
-                    return "planeta.idplaneta";
-                }
-
-                @Override
-                public String foreignField() {
-                    return "idplaneta";
-                }
-
-                @Override
-                public String as() {
-                    return "planeta";
-                }
-
-                @Override
-                public boolean lazy() {
-                    return false;
-                }
-
-                @Override
-                public Class<? extends Annotation> annotationType() {
-                    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-                }
-            };
-
-            Referenced oceanoReferenced = new Referenced() {
-                @Override
-                public String from() {
-                    return "oceano";
-                }
-
-                @Override
-                public String localField() {
-                    return "oceano.idoceano";
-                }
-
-                @Override
-                public String foreignField() {
-                    return "idoceano";
-                }
-
-                @Override
-                public String as() {
-                    return "oceano";
-                }
-
-                @Override
-                public boolean lazy() {
-                    return false;
-                }
-
-                @Override
-                public Class<? extends Annotation> annotationType() {
-                    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-                }
-            };
-
-            List<Bson> lookup = new ArrayList<>();
-
-     
-            List<Bson> pipelinePlaneta = PlanetaLookupSupplier.get(Planeta::new, planetaReferenced, "",levelLocal);
-
-            if (pipelinePlaneta.isEmpty() || pipelinePlaneta.size() == 0) {
-                Test.msg("pipeLinePlaneta.isEmpty()");
-            } else {
-                pipelinePlaneta.forEach(b -> {
-                    lookup.add(b);
-                });
-            }
-
-            /*
-            Invocando OceanoLookup
-             */
-       
-            List<Bson> pipelineOceano = OceanoLookupSupplier.get(Oceano::new, oceanoReferenced, "",levelLocal);
-
-            if (pipelineOceano.isEmpty() || pipelineOceano.size() == 0) {
-                Test.msg("pipeLineOceano.isEmpty()");
-            } else {
-                pipelineOceano.forEach(b -> {
-                    lookup.add(b);
-                });
-            }
 
             /**
              * Ejecuta la consulta
              */
-            MongoCursor<Document> cursor;
-            if (lookup.isEmpty() || lookup.size() == 0) {
-
-                Test.msgTab("[execute find().]");
-                cursor = collection.find().iterator();
-
-            } else {
-                Test.msgTab("execute aggregate");
-                Test.msgTab("lookup "+lookup);
-                
-                cursor = collection.aggregate(lookup).iterator();
-            }
-
-            try {
-                while (cursor.hasNext()) {
-                
-                    Pais pais = PaisSupplier.get(Pais::new, cursor.next());
-                    list.add(pais);
-                }
-            } finally {
-                cursor.close();
-            }
-
-        } catch (Exception e) {
-            Test.error(Test.nameOfClassAndMethod() + " "+e.getLocalizedMessage());
-        }
-        return list;
-    }
-// </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="  public List<Pais> findAllSimple() {">
-
-    public List<Pais> findAllSimple() {
-
-        List<Pais> list = new ArrayList<>();
-        try {
-            MongoDatabase database = mongoClient.getDatabase("world");
-            MongoCollection<Document> collection = database.getCollection("pais");
             MongoCursor<Document> cursor = collection.find().iterator();
 
             try {
                 while (cursor.hasNext()) {
-                    Pais pais = PaisSupplier.get(Pais::new, cursor.next());
+
+                    Pais pais = paisSupplier.get(Pais::new, cursor.next());
                     list.add(pais);
                 }
             } finally {
@@ -231,7 +82,7 @@ public class PaisRepositoryImpl implements PaisRepository {
             }
 
         } catch (Exception e) {
-            Test.error(Test.nameOfClassAndMethod() + " "+e.getLocalizedMessage());
+            Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
         }
         return list;
     }
@@ -245,12 +96,11 @@ public class PaisRepositoryImpl implements PaisRepository {
             MongoCollection<Document> collection = database.getCollection("pais");
             Document doc = collection.find(eq("idpais", id)).first();
 
-            Pais pais = PaisSupplier.get(Pais::new, doc);
-//            Jsonb jsonb = JsonbBuilder.create();
-//            Pais pais = jsonb.fromJson(doc.toJson(), Pais.class);
+            Pais pais = paisSupplier.get(Pais::new, doc);
+
             return Optional.of(pais);
         } catch (Exception e) {
-            Test.error(Test.nameOfClassAndMethod() + " "+e.getLocalizedMessage());
+            Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
         }
 
         return Optional.empty();

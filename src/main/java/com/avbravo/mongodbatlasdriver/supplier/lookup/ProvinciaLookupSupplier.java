@@ -89,7 +89,10 @@ public class ProvinciaLookupSupplier {
                 public boolean lazy() {
                     return false;
                 }
-
+ @Override
+                public boolean typeFieldkeyString() {
+                    return true;
+                }
                 @Override
                 public Class<? extends Annotation> annotationType() {
                     throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody

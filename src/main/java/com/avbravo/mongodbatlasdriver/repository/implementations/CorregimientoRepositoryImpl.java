@@ -37,7 +37,7 @@ import org.eclipse.microprofile.config.Config;
 public class CorregimientoRepositoryImpl implements CorregimientoRepository {
     // <editor-fold defaultstate="collapsed" desc="level">
 
- LookupSupplierLevel levelLocal = LookupSupplierLevel.THREE;
+    LookupSupplierLevel levelLocal = LookupSupplierLevel.THREE;
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="@Inject">
 
@@ -47,26 +47,25 @@ public class CorregimientoRepositoryImpl implements CorregimientoRepository {
     @Inject
     MongoClient mongoClient;
 // </editor-fold>
-    
-    // <editor-fold defaultstate="collapsed" desc="List<Corregimiento> findAll()">
 
+    // <editor-fold defaultstate="collapsed" desc="List<Corregimiento> findAll()">
     @Override
     public List<Corregimiento> findAll() {
 
-      List<Corregimiento> list = new ArrayList<>();
+        List<Corregimiento> list = new ArrayList<>();
         try {
-        
+
             MongoDatabase database = mongoClient.getDatabase("world");
             MongoCollection<Document> collection = database.getCollection("corregimiento");
-            
+
             /**
-             * corregimiento es de nivel 3
-             * Nivel 3           Nivel 2       Nivel 1   Nivel 0
-             * corregimiento --> provincia    --> pais --> planeta
-             * corregimiento --> provincia    --> pais --> oceano
-             *                   provincia.idprovincia -->provincia.pais.idpais-->pais.planeta.idplaneta
-             *                   provincia.idprovincia -->provincia.pais.idpais-->pais.ocenao.idoceano
-             * Observe que cambia de nivel1  a nivel 9
+             * corregimiento es de nivel 3 Nivel 3 Nivel 2 Nivel 1 Nivel 0
+             * corregimiento --> provincia --> pais --> planeta corregimiento
+             * --> provincia --> pais --> oceano provincia.idprovincia
+             * -->provincia.pais.idpais-->pais.planeta.idplaneta
+             * provincia.idprovincia
+             * -->provincia.pais.idpais-->pais.ocenao.idoceano Observe que
+             * cambia de nivel1 a nivel 9
              */
             /**
              * Analiza las referencias
@@ -78,7 +77,6 @@ public class CorregimientoRepositoryImpl implements CorregimientoRepository {
              * Planeta planeta;
              */
 //             Bson pipeline = lookup("planeta", "planeta.idplaneta", "idplaneta", "planeta");
-
             /**
              * Aqui lee la entidad Provincia y busca todas las references
              *
@@ -116,29 +114,31 @@ public class CorregimientoRepositoryImpl implements CorregimientoRepository {
                 }
 
                 @Override
+                public boolean typeFieldkeyString() {
+                    return true;
+                }
+
+                @Override
                 public Class<? extends Annotation> annotationType() {
                     throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
                 }
             };
 
-           
             List<Bson> lookup = new ArrayList<>();
 
-         
             /**
-             * Tengo que analizar la clase y saber que hay dentro de el otras referencias
-             * por ejemplo corregimiento-->pais-->planeta (Planeta tiene referenciados dentro de el 
-             * asi que debe ser un parent para otros.
-             * por eso se coloca alli
+             * Tengo que analizar la clase y saber que hay dentro de el otras
+             * referencias por ejemplo corregimiento-->pais-->planeta (Planeta
+             * tiene referenciados dentro de el asi que debe ser un parent para
+             * otros. por eso se coloca alli
              */
             /**
-             * Tiene @Referenceed a Provincia
-             *        Si se analiza Provincia tiene @Referenced a Oceano y Planeta
-             *        La busqueda del proximo nivel no aplica a pais.pais.idpais si no debe ser
-             *        pais.idpais por lo que no pasa en false.
+             * Tiene @Referenceed a Provincia Si se analiza Provincia tiene
+             * @Referenced a Oceano y Planeta La busqueda del proximo nivel no
+             * aplica a pais.pais.idpais si no debe ser pais.idpais por lo que
+             * no pasa en false.
              */
-
-            List<Bson> pipelineProvincia= ProvinciaLookupSupplier.get(Provincia::new, provinciaReferenced, "provincia",levelLocal,false);
+            List<Bson> pipelineProvincia = ProvinciaLookupSupplier.get(Provincia::new, provinciaReferenced, "provincia", levelLocal, false);
 
             if (pipelineProvincia.isEmpty() || pipelineProvincia.size() == 0) {
                 Test.msg("pipeLineProvincia.isEmpty()");
@@ -148,8 +148,6 @@ public class CorregimientoRepositoryImpl implements CorregimientoRepository {
                 });
             }
 
-           
-
             /**
              * Ejecuta la consulta
              */
@@ -158,10 +156,10 @@ public class CorregimientoRepositoryImpl implements CorregimientoRepository {
                 cursor = collection.find().iterator();
 
             } else {
-                Test.box("lookup en CorregimientoRepositoyyImpl: "+lookup.toString());
-                
+                Test.box("lookup en CorregimientoRepositoyyImpl: " + lookup.toString());
+
                 cursor = collection.aggregate(lookup).iterator();
-      
+
             }
 
             try {
@@ -174,11 +172,12 @@ public class CorregimientoRepositoryImpl implements CorregimientoRepository {
             }
 
         } catch (Exception e) {
-            Test.error(Test.nameOfClassAndMethod() + " "+e.getLocalizedMessage());
+            Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
         }
         return list;
     }
 // </editor-fold>
+
     @Override
     public Optional<Corregimiento> findById(String id) {
 
@@ -186,12 +185,12 @@ public class CorregimientoRepositoryImpl implements CorregimientoRepository {
             MongoDatabase database = mongoClient.getDatabase("world");
             MongoCollection<Document> collection = database.getCollection("corregimiento");
             Document doc = collection.find(eq("idcorregimiento", id)).first();
-           
-            Corregimiento corregimiento = CorregimientoSupplier.get(Corregimiento::new,doc);
+
+            Corregimiento corregimiento = CorregimientoSupplier.get(Corregimiento::new, doc);
 
             return Optional.of(corregimiento);
         } catch (Exception e) {
-            Test.error(Test.nameOfClassAndMethod() + " "+e.getLocalizedMessage());
+            Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
         }
 
         return Optional.empty();

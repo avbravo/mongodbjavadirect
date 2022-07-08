@@ -5,7 +5,6 @@
 package com.avbravo.mongodbatlasdriver.supplier;
 
 import com.avbravo.jmoordb.core.lookup.enumerations.LookupSupplierLevel;
-import com.avbravo.jmoordb.core.util.ConsoleUtil;
 import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Provincia;
 import com.avbravo.mongodbatlasdriver.model.Pais;
@@ -72,7 +71,7 @@ public class ProvinciaSupplier {
 
             Document docPais;
             if (!istListReferecendToPais) {
-                provincia.setPais(PaisSupplier.get(Pais::new, documentPaisList, documentPlanetaList, documentOceanoList));
+//                provincia.setPais(PaisSupplier.get(Pais::new, documentPaisList, documentPlanetaList, documentOceanoList));
             } else {
                 /**
                  * En nivel 2 no se permiten @Referenced List<Nivel1>
@@ -140,7 +139,7 @@ public class ProvinciaSupplier {
 
             Document docPais;
             if (!istListReferecendToPais) {
-                provincia.setPais(PaisSupplier.get(Pais::new, documentPaisList, documentPlanetaList, documentOceanoList));
+           //     provincia.setPais(PaisSupplier.get(Pais::new, documentPaisList, documentPlanetaList, documentOceanoList));
             } else {
                 /**
                  * En nivel 2 no se permiten @Referenced List<Nivel1>
