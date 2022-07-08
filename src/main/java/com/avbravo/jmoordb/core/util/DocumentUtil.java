@@ -65,6 +65,13 @@ public class DocumentUtil {
             Test.msg("remove foreignFiel " + data);
             data = data.replace("=", "");
             Test.msg("remove =" + data);
+            data = data.replace("[", "");
+            Test.msg("remove [" + data);
+            data = data.trim();
+            data = data.replace("[", "");
+            Test.msg("remove [" + data);
+            data = data.replace("]", "");
+            Test.msg("remove ]" + data);
             data = data.trim();
             StringTokenizer st = new StringTokenizer(data, ",");
             while (st.hasMoreTokens()) {
