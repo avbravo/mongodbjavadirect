@@ -61,7 +61,7 @@ public class PaisSupplier implements Serializable {
     public Pais get(Supplier<? extends Pais> s, Document document) {
         Pais pais = s.get();
         try {
-            ConsoleUtil.info(Test.nameOfClassAndMethod() + " Dpcument " + document.toJson());
+            ConsoleUtil.info(Test.nameOfClassAndMethod() + " Document " + document.toJson());
             /**
              * --------------------------------------------------------
              *
@@ -71,7 +71,7 @@ public class PaisSupplier implements Serializable {
              */
             pais.setIdpais(String.valueOf(document.get("idpais")));
             pais.setPais(String.valueOf(document.get("pais")));
-            ConsoleUtil.info("--->voy a procesar <----");
+
             /**
              * ---------------------------------------------
              *
@@ -81,7 +81,7 @@ public class PaisSupplier implements Serializable {
             Jsonb jsonb = JsonbBuilder.create();
             Idioma idioma = jsonb.fromJson(doc.toJson(), Idioma.class);
             pais.setIdioma(idioma);
-            ConsoleUtil.info("--->pase Idioma <----");
+
             /**
              * --------------------------------------------------
              *
@@ -96,16 +96,16 @@ public class PaisSupplier implements Serializable {
                 musicaList.add(musica);
             }
             pais.setMusica(musicaList);
-            ConsoleUtil.info("--->pase Musica <----");
+
             /**
              * ------------------------------------------------
              *
              * Step 1:
              * <@Referemced>
-             * Generar las interfaces Referenced 
-             * Verificar si es List<> o una Referencia simple
-             * Obtener el valor de la llave primaria mediatne DocumentUtil.getIdValue(...)
-             * 
+             * Generar las interfaces Referenced Verificar si es List<> o una
+             * Referencia simple Obtener el valor de la llave primaria mediatne
+             * DocumentUtil.getIdValue(...)
+             *
              */
             /* --------------------------------------------------
              * @Referenced Planeta planeta;
@@ -152,34 +152,24 @@ public class PaisSupplier implements Serializable {
                 }
             };
 
-            ConsoleUtil.info("--> document.get(planeta) " + document.get(planetaReferenced.from()).toString());
-            ConsoleUtil.info("invocare el proceso del id");
             /**
              * Crear una variable del tipo y valor de Referenced.foreigndFiel()
              * Verificar el tipo keyString()
              *
              */
-
-            ConsoleUtil.redBackground("idplaneta obtenido " + DocumentUtil.getIdValue(document, planetaReferenced));
             Boolean istListReferecendToPlaneta = false;
             if (!istListReferecendToPlaneta) {
-                Optional<Planeta> planetaOptional = Optional.empty();
-                if (planetaReferenced.typeFieldkeyString()) {
-                    planetaOptional = planetaRepository.findById(DocumentUtil.getIdValue(document, planetaReferenced));
-                } else {
-                    //planetaOptional = planetaRepository.findById(Integer.parseInt(DocumentUtil.getId(document, planetaReferenced)));
-                }
-
+                Optional<Planeta> planetaOptional = planetaFindPK(document, planetaReferenced);
                 if (planetaOptional.isPresent()) {
                     pais.setPlaneta(planetaOptional.get());
                 } else {
                     Test.warning("No tiene referencia a Planeta");
                 }
             } else {
-                List<Document> documentPlanetaList = (List<Document>) document.get("planeta");
+                List<Document> documentPlanetaList = (List<Document>) document.get(planetaReferenced.from());
                 List<Planeta> planetaList = new ArrayList<>();
                 for (Document docPlaneta : documentPlanetaList) {
-                    Optional<Planeta> planetaOptional = planetaRepository.findById(String.valueOf(docPlaneta.get("planeta")));
+                    Optional<Planeta> planetaOptional = planetaFindPK(document, planetaReferenced);
                     if (planetaOptional.isPresent()) {
                         planetaList.add(planetaOptional.get());
                     } else {
@@ -196,25 +186,77 @@ public class PaisSupplier implements Serializable {
              * Es una List<> referenciada
              * --------------------------------------------------
              */
-            Boolean istListReferecendToOceano = false;
+            Referenced oceanoReferenced = new Referenced() {
+                @Override
+                public String from() {
+                    return "oceano";
+                }
+
+                @Override
+                public String localField() {
+                    return "oceano.idoceano";
+                }
+
+                @Override
+                public String foreignField() {
+                    return "idoceano";
+                }
+
+                @Override
+                public String as() {
+                    return "oceano";
+                }
+
+                @Override
+                public boolean lazy() {
+                    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                }
+
+                @Override
+                public Class<? extends Annotation> annotationType() {
+                    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                }
+
+                @Override
+                public boolean typeFieldkeyString() {
+                    return true;
+                }
+            };
+ConsoleUtil.warning("Analizando oceano");
+            Boolean istListReferecendToOceano = true;
             if (!istListReferecendToOceano) {
-                Optional<Oceano> oceanoOptional = oceanoRepository.findById(String.valueOf(document.get("oceano")));
+                Optional<Oceano> oceanoOptional = oceanoFindPK(document, oceanoReferenced);
+
                 if (oceanoOptional.isPresent()) {
-                    //pais.setOceano(oceanoOptional.get());
+                    //   pais.setOceano(oceanoOptional.get());
                 } else {
-                    Test.warning("No tiene referencia a Oceano ");
+                    Test.warning("No tiene referencia a "+oceanoReferenced.from());
                 }
             } else {
-                List<Document> documentOceanoList = (List<Document>) document.get("oceano");
+                Test.msg("List<Oceano> @Referenced... a procesar");
+                /**
+                 * Pasos para @Referenced List<> 
+                 * 1- Obtener la lista documento
+                 * 2- Obtener un List<SDocument> de las llaves primarias
+                 */
+                List<Document> documentOceanoList = (List<Document>) document.get(oceanoReferenced.from());
                 List<Oceano> oceanoList = new ArrayList<>();
-                for (Document docOceano : documentOceanoList) {
-                    Optional<Oceano> oceanoOptional = oceanoRepository.findById(String.valueOf(docOceano.get("oceano")));
+                List<Document> documentOceanoPkList = DocumentUtil.getIdListValue(document, oceanoReferenced);
+                if(documentOceanoPkList == null || documentOceanoPkList.isEmpty()){
+                    Test.msg("No se pudo decomponer la lista de id referenced....");
+                }
+                for (Document documentPk : documentOceanoPkList) {
+                    Test.msg("docOceano.toJson()  " + documentPk.toJson());
+                     Optional<Oceano> oceanoOptional = oceanoFindPK(documentPk, oceanoReferenced);
                     if (oceanoOptional.isPresent()) {
                         oceanoList.add(oceanoOptional.get());
                     } else {
-                        Test.warning("No tiene referencia a Planeta ");
+                        Test.warning("No tiene referencia a " + oceanoReferenced.from());
                     }
+                    
+
                 }
+
                 /**
                  * Si fuera referenciado se elimina el comentario
                  */
@@ -230,4 +272,59 @@ public class PaisSupplier implements Serializable {
     }
 // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="Optional<Planeta> planetaFindPK(Document document, Referenced planetaReferenced)">
+    /**
+     *
+     * @param document
+     * @param planetaReferenced
+     * @return Devuelve un Optional del resultado de la busqueda por la llave
+     * primaria Dependiendo si es entero o String
+     */
+    private Optional<Planeta> planetaFindPK(Document document, Referenced planetaReferenced) {
+        try {
+            Optional<Planeta> planetaOptional = Optional.empty();
+            if (planetaReferenced.typeFieldkeyString()) {
+                planetaOptional = planetaRepository.findById(DocumentUtil.getIdValue(document, planetaReferenced));
+            } else {
+                //     planetaOptional = planetaRepository.findById(Integer.parseInt(DocumentUtil.getIdValue(document, planetaReferenced)));
+            }
+
+            if (planetaOptional.isPresent()) {
+                return planetaOptional;
+            }
+
+        } catch (Exception e) {
+            Test.error(Test.nameOfClassAndMethod() + " error() " + e.getLocalizedMessage());
+        }
+        return Optional.empty();
+    }
+// </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Optional<Planeta> oceanoFindPK(Document document, Referenced planetaReferenced)">
+
+    /**
+     *
+     * @param document
+     * @param planetaReferenced
+     * @return Devuelve un Optional del resultado de la busqueda por la llave
+     * primaria Dependiendo si es entero o String
+     */
+    private Optional<Oceano> oceanoFindPK(Document document, Referenced oceanoReferenced) {
+        try {
+            Optional<Oceano> oceanoOptional = Optional.empty();
+            if (oceanoReferenced.typeFieldkeyString()) {
+                oceanoOptional = oceanoRepository.findById(DocumentUtil.getIdValue(document, oceanoReferenced));
+            } else {
+                //     oceanoOptional = oceanoRepository.findById(Integer.parseInt(DocumentUtil.getIdValue(document, oceanoReferenced)));
+            }
+
+            if (oceanoOptional.isPresent()) {
+                return oceanoOptional;
+            }
+
+        } catch (Exception e) {
+            Test.error(Test.nameOfClassAndMethod() + " error() " + e.getLocalizedMessage());
+        }
+        return Optional.empty();
+    }
+// </editor-fold>
 }
