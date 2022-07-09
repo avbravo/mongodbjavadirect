@@ -52,7 +52,7 @@ public class DocumentUtil {
         return result;
     }
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="String getIdListValue(Document document, Referenced referenced)">
+    // <editor-fold defaultstate="collapsed" desc="String getListValue(Document document, Referenced referenced)">
 
     /**
      *
@@ -60,7 +60,7 @@ public class DocumentUtil {
      * @param referenced
      * @return List<Document> con las referencias de un @Referenced List<>
      */
-    public static List<Document> getIdListValue(Document document, Referenced referenced) {
+    public static List<Document> getListValue(Document document, Referenced referenced) {
         List<Document> result = new ArrayList<>();
         try {
 

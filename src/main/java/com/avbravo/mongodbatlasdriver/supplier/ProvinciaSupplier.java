@@ -17,9 +17,7 @@ import org.bson.Document;
  * @author avbravo
  */
 public class ProvinciaSupplier {
-    // <editor-fold defaultstate="collapsed" desc="level">
-        LookupSupplierLevel levelLocal= LookupSupplierLevel.TWO;
-// </editor-fold>
+
             // <editor-fold defaultstate="collapsed" desc="graphics">
 
     /**

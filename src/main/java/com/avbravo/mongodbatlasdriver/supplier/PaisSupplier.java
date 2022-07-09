@@ -35,9 +35,7 @@ import org.bson.Document;
 @RequestScoped
 public class PaisSupplier implements Serializable {
 
-
     // <editor-fold defaultstate="collapsed" desc="graphics">
-
     /**
      * Pais{
      *
@@ -59,7 +57,7 @@ public class PaisSupplier implements Serializable {
     public Pais get(Supplier<? extends Pais> s, Document document) {
         Pais pais = s.get();
         try {
-            ConsoleUtil.info(Test.nameOfClassAndMethod() + " Document " + document.toJson());
+
             /**
              * --------------------------------------------------------
              *
@@ -164,20 +162,28 @@ public class PaisSupplier implements Serializable {
                     Test.warning("No tiene referencia a Planeta");
                 }
             } else {
+
+                /**
+                 * Pasos para @Referenced List<>
+                 * 1- Obtener la lista documento 2- Obtener un List<SDocument>
+                 * de las llaves primarias
+                 */
                 List<Document> documentPlanetaList = (List<Document>) document.get(planetaReferenced.from());
                 List<Planeta> planetaList = new ArrayList<>();
-                for (Document docPlaneta : documentPlanetaList) {
-                    Optional<Planeta> planetaOptional = planetaFindPK(document, planetaReferenced);
-                    if (planetaOptional.isPresent()) {
-                        planetaList.add(planetaOptional.get());
-                    } else {
-                        Test.warning("No tiene referencia a Planeta ");
+                List<Document> documentPlanetaPkList = DocumentUtil.getListValue(document, planetaReferenced);
+                if (documentPlanetaPkList == null || documentPlanetaPkList.isEmpty()) {
+                    Test.msg("No se pudo decomponer la lista de id referenced....");
+                } else {
+                    for (Document documentPk : documentPlanetaPkList) {
+                        Optional<Planeta> planetaOptional = planetaFindPK(documentPk, planetaReferenced);
+                        if (planetaOptional.isPresent()) {
+                            planetaList.add(planetaOptional.get());
+                        } else {
+                            Test.warning("No tiene referencia a " + planetaReferenced.from());
+                        }
                     }
                 }
-                /**
-                 * Si fuera referenciado se elimina el comentario
-                 */
-                //pais.setPlaneta(planetaList);
+              //pais.setPlaneta(planetaList);
             }
             /* --------------------------------------------------
              * @Referenced List<Oceano> oceano;
@@ -220,18 +226,17 @@ public class PaisSupplier implements Serializable {
                     return true;
                 }
             };
-            ConsoleUtil.warning("Analizando oceano");
+
             Boolean istListReferecendToOceano = true;
             if (!istListReferecendToOceano) {
                 Optional<Oceano> oceanoOptional = oceanoFindPK(document, oceanoReferenced);
-
                 if (oceanoOptional.isPresent()) {
                     //   pais.setOceano(oceanoOptional.get());
                 } else {
                     Test.warning("No tiene referencia a " + oceanoReferenced.from());
                 }
             } else {
-                Test.msg("List<Oceano> @Referenced... a procesar");
+
                 /**
                  * Pasos para @Referenced List<>
                  * 1- Obtener la lista documento 2- Obtener un List<SDocument>
@@ -239,21 +244,18 @@ public class PaisSupplier implements Serializable {
                  */
                 List<Document> documentOceanoList = (List<Document>) document.get(oceanoReferenced.from());
                 List<Oceano> oceanoList = new ArrayList<>();
-                List<Document> documentOceanoPkList = DocumentUtil.getIdListValue(document, oceanoReferenced);
+                List<Document> documentOceanoPkList = DocumentUtil.getListValue(document, oceanoReferenced);
                 if (documentOceanoPkList == null || documentOceanoPkList.isEmpty()) {
                     Test.msg("No se pudo decomponer la lista de id referenced....");
                 } else {
                     for (Document documentPk : documentOceanoPkList) {
-                        ConsoleUtil.info("docOceano.toJson()  " + documentPk.toJson());
                         Optional<Oceano> oceanoOptional = oceanoFindPK(documentPk, oceanoReferenced);
                         if (oceanoOptional.isPresent()) {
                             oceanoList.add(oceanoOptional.get());
                         } else {
                             Test.warning("No tiene referencia a " + oceanoReferenced.from());
                         }
-
                     }
-
                 }
 
                 /**
@@ -311,7 +313,6 @@ public class PaisSupplier implements Serializable {
         try {
             Optional<Oceano> oceanoOptional = Optional.empty();
             if (oceanoReferenced.typeFieldkeyString()) {
-                ConsoleUtil.warning("getIdValue" +DocumentUtil.getIdValue(document, oceanoReferenced));
                 oceanoOptional = oceanoRepository.findById(DocumentUtil.getIdValue(document, oceanoReferenced));
             } else {
                 //     oceanoOptional = oceanoRepository.findById(Integer.parseInt(DocumentUtil.getIdValue(document, oceanoReferenced)));
