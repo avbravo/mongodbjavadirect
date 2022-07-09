@@ -35,9 +35,7 @@ import org.bson.Document;
 @RequestScoped
 public class PaisSupplier implements Serializable {
 
-    // <editor-fold defaultstate="collapsed" desc="level">
-    LookupSupplierLevel levelLocal = LookupSupplierLevel.ONE;
-// </editor-fold>
+
     // <editor-fold defaultstate="collapsed" desc="graphics">
 
     /**

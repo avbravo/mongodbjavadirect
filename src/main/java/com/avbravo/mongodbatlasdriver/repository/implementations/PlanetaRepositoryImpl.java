@@ -31,9 +31,7 @@ import org.eclipse.microprofile.config.Config;
 @ApplicationScoped
 //@Stateless
 public class PlanetaRepositoryImpl implements PlanetaRepository {
-    // <editor-fold defaultstate="collapsed" desc="level">
-        LookupSupplierLevel levelLocal= LookupSupplierLevel.ZERO;
-// </editor-fold>
+
     // <editor-fold defaultstate="collapsed" desc="@Inject">
 
     @Inject

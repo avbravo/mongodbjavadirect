@@ -31,9 +31,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 //@Stateless
 public class PaisRepositoryImpl implements PaisRepository {
 
-    // <editor-fold defaultstate="collapsed" desc="level">
-    LookupSupplierLevel levelLocal = LookupSupplierLevel.ONE;
-// </editor-fold>
+
     // <editor-fold defaultstate="collapsed" desc="  @Inject">
     @Inject
     private Config config;

@@ -29,9 +29,7 @@ import org.eclipse.microprofile.config.Config;
 @ApplicationScoped
 //@Stateless
 public class OceanoRepositoryImpl implements OceanoRepository {
-       // <editor-fold defaultstate="collapsed" desc="level">
-        LookupSupplierLevel levelLocal= LookupSupplierLevel.ZERO;
-// </editor-fold>
+
     
     // <editor-fold defaultstate="collapsed" desc="@Inject">
 

@@ -34,10 +34,7 @@ import org.eclipse.microprofile.config.Config;
 @ApplicationScoped
 //@Stateless
 public class ProfesionRepositoryImpl implements ProfesionRepository {
-    // <editor-fold defaultstate="collapsed" desc="level">
 
- LookupSupplierLevel levelLocal = LookupSupplierLevel.THREE;
-// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="@Inject">
 
     @Inject
@@ -140,15 +137,15 @@ public class ProfesionRepositoryImpl implements ProfesionRepository {
              *        pais.idpais por lo que no pasa en false.
              */
 
-            List<Bson> pipelineGrupoprofesion= GrupoprofesionLookupSupplier.get(Grupoprofesion::new, grupoprofesionReferenced, "grupoprofesion",levelLocal,false);
+//            List<Bson> pipelineGrupoprofesion= GrupoprofesionLookupSupplier.get(Grupoprofesion::new, grupoprofesionReferenced, "grupoprofesion",levelLocal,false);
 
-            if (pipelineGrupoprofesion.isEmpty() || pipelineGrupoprofesion.size() == 0) {
-                Test.msg("pipeLineProvincia.isEmpty()");
-            } else {
-            pipelineGrupoprofesion.forEach(b -> {
-                    lookup.add(b);
-                });
-            }
+//            if (pipelineGrupoprofesion.isEmpty() || pipelineGrupoprofesion.size() == 0) {
+//                Test.msg("pipeLineProvincia.isEmpty()");
+//            } else {
+//            pipelineGrupoprofesion.forEach(b -> {
+//                    lookup.add(b);
+//                });
+//            }
 
            
 

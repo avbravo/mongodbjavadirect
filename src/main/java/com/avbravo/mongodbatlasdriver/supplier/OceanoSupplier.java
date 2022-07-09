@@ -22,9 +22,7 @@ import org.bson.Document;
  */
 @RequestScoped
 public class OceanoSupplier implements Serializable {
-        // <editor-fold defaultstate="collapsed" desc="level">
-        LookupSupplierLevel levelLocal= LookupSupplierLevel.ZERO;
-// </editor-fold>
+
            // <editor-fold defaultstate="collapsed" desc="graphics">
 
     /**
@@ -46,7 +44,7 @@ public class OceanoSupplier implements Serializable {
         
         Oceano oceano = s.get();
         try { 
-            ConsoleUtil.info(Test.nameOfClassAndMethod() +" Dpcument "+document.toJson());
+           
              /**
              * Entidad: Oceano
              * Oceano{
