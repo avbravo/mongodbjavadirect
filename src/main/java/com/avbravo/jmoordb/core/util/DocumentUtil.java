@@ -26,14 +26,26 @@ public class DocumentUtil {
     public static String getIdValue(Document document, Referenced referenced) {
         String result = "";
         try {
-
-            String data = document.get(referenced.from()).toString();
-            data = data.replace("Document{{", "");
-            data = data.replace("}}", "");
-            data = data.replace(referenced.foreignField(), "");
-            data = data.replace("=", "");
-            result = data.trim();
-
+           
+            String data = "";
+            if (document.get(referenced.from()) != null) {
+                data = document.get(referenced.from()).toString();                
+                data = data.replace("Document{{", "");                
+                data = data.replace("}}", "");                
+                data = data.replace(referenced.foreignField(), "");                
+                data = data.replace("=", "");                
+                result = data.trim();
+            } else {
+                // Cuando se pasa desde un List<Document> de llaves primarias
+                data = document.toJson();
+                data = data.replace("{", "");               
+                data = data.replace("}", "");                
+                data = data.replace("\"", "");
+                data = data.replace(referenced.foreignField(), "");                
+                data = data.replace(":", "");
+                result = data.trim();
+                
+            }
         } catch (Exception e) {
             Test.error(Test.nameOfClassAndMethod() + "error: " + e.getLocalizedMessage());
         }
@@ -46,32 +58,29 @@ public class DocumentUtil {
      *
      * @param document
      * @param referenced
-     * @return Obtiene el valor del id referenciado
+     * @return List<Document> con las referencias de un @Referenced List<>
      */
     public static List<Document> getIdListValue(Document document, Referenced referenced) {
         List<Document> result = new ArrayList<>();
         try {
-            ConsoleUtil.info(Test.nameOfClassAndMethod() + " llevo a procesar la lista");
-            Test.msg("Document " + document);
-            Test.msg("Referenced " + referenced.localField());
 
+           
             String data = document.get(referenced.from()).toString();
-            Test.msg("data " + data);
-            data = data.replace("Document{{", "");
-            Test.msg("remove Document{{ " + data);
+                       data = data.replace("Document{{", "");
+           
             data = data.replace("}}", "");
-            Test.msg("remove }} " + data);
+           
             data = data.replace(referenced.foreignField(), "");
-            Test.msg("remove foreignFiel " + data);
+           
             data = data.replace("=", "");
-            Test.msg("remove =" + data);
+           
             data = data.replace("[", "");
-            Test.msg("remove [" + data);
+           
             data = data.trim();
             data = data.replace("[", "");
-            Test.msg("remove [" + data);
+            
             data = data.replace("]", "");
-            Test.msg("remove ]" + data);
+           
             data = data.trim();
             StringTokenizer st = new StringTokenizer(data, ",");
             while (st.hasMoreTokens()) {
@@ -85,7 +94,7 @@ public class DocumentUtil {
                 result.add(doc);
 
             }
-            Test.msg("result " + result);
+           
         } catch (Exception e) {
             Test.error(Test.nameOfClassAndMethod() + "error: " + e.getLocalizedMessage());
         }

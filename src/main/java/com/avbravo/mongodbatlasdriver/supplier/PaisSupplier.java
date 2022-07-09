@@ -222,7 +222,7 @@ public class PaisSupplier implements Serializable {
                     return true;
                 }
             };
-ConsoleUtil.warning("Analizando oceano");
+            ConsoleUtil.warning("Analizando oceano");
             Boolean istListReferecendToOceano = true;
             if (!istListReferecendToOceano) {
                 Optional<Oceano> oceanoOptional = oceanoFindPK(document, oceanoReferenced);
@@ -230,30 +230,31 @@ ConsoleUtil.warning("Analizando oceano");
                 if (oceanoOptional.isPresent()) {
                     //   pais.setOceano(oceanoOptional.get());
                 } else {
-                    Test.warning("No tiene referencia a "+oceanoReferenced.from());
+                    Test.warning("No tiene referencia a " + oceanoReferenced.from());
                 }
             } else {
                 Test.msg("List<Oceano> @Referenced... a procesar");
                 /**
-                 * Pasos para @Referenced List<> 
-                 * 1- Obtener la lista documento
-                 * 2- Obtener un List<SDocument> de las llaves primarias
+                 * Pasos para @Referenced List<>
+                 * 1- Obtener la lista documento 2- Obtener un List<SDocument>
+                 * de las llaves primarias
                  */
                 List<Document> documentOceanoList = (List<Document>) document.get(oceanoReferenced.from());
                 List<Oceano> oceanoList = new ArrayList<>();
                 List<Document> documentOceanoPkList = DocumentUtil.getIdListValue(document, oceanoReferenced);
-                if(documentOceanoPkList == null || documentOceanoPkList.isEmpty()){
+                if (documentOceanoPkList == null || documentOceanoPkList.isEmpty()) {
                     Test.msg("No se pudo decomponer la lista de id referenced....");
-                }
-                for (Document documentPk : documentOceanoPkList) {
-                    Test.msg("docOceano.toJson()  " + documentPk.toJson());
-                     Optional<Oceano> oceanoOptional = oceanoFindPK(documentPk, oceanoReferenced);
-                    if (oceanoOptional.isPresent()) {
-                        oceanoList.add(oceanoOptional.get());
-                    } else {
-                        Test.warning("No tiene referencia a " + oceanoReferenced.from());
+                } else {
+                    for (Document documentPk : documentOceanoPkList) {
+                        ConsoleUtil.info("docOceano.toJson()  " + documentPk.toJson());
+                        Optional<Oceano> oceanoOptional = oceanoFindPK(documentPk, oceanoReferenced);
+                        if (oceanoOptional.isPresent()) {
+                            oceanoList.add(oceanoOptional.get());
+                        } else {
+                            Test.warning("No tiene referencia a " + oceanoReferenced.from());
+                        }
+
                     }
-                    
 
                 }
 
@@ -312,6 +313,7 @@ ConsoleUtil.warning("Analizando oceano");
         try {
             Optional<Oceano> oceanoOptional = Optional.empty();
             if (oceanoReferenced.typeFieldkeyString()) {
+                ConsoleUtil.warning("getIdValue" +DocumentUtil.getIdValue(document, oceanoReferenced));
                 oceanoOptional = oceanoRepository.findById(DocumentUtil.getIdValue(document, oceanoReferenced));
             } else {
                 //     oceanoOptional = oceanoRepository.findById(Integer.parseInt(DocumentUtil.getIdValue(document, oceanoReferenced)));
