@@ -5,7 +5,6 @@
 package com.avbravo.mongodbatlasdriver.repository.implementations;
 
 import com.avbravo.jmoordb.core.util.Test;
-import com.avbravo.jmoordb.core.lookup.enumerations.LookupSupplierLevel;
 import com.avbravo.mongodbatlasdriver.model.Pais;
 import com.avbravo.mongodbatlasdriver.repository.PaisRepository;
 import com.avbravo.mongodbatlasdriver.supplier.PaisSupplier;
@@ -49,6 +48,9 @@ public class PaisRepositoryImpl implements PaisRepository {
 // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="  public List<Pais> findAll() {">
+//      @Benchmark
+//    @BenchmarkMode(Mode.AverageTime)
+//    @OutputTimeUnit(TimeUnit.MICROSECONDS)
     @Override
     public List<Pais> findAll() {
 
@@ -65,8 +67,7 @@ public class PaisRepositoryImpl implements PaisRepository {
             try {
                 while (cursor.hasNext()) {
 
-                    Pais pais = paisSupplier.get(Pais::new, cursor.next());
-                    list.add(pais);
+                    list.add(paisSupplier.get(Pais::new, cursor.next()));
                 }
             } finally {
                 cursor.close();

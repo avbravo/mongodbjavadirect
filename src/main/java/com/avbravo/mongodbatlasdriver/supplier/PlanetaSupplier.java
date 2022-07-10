@@ -50,7 +50,7 @@ public class PlanetaSupplier implements Serializable {
              * Esquema de Niveles: | Nivel 0| Planeta
              *
              */
-            ConsoleUtil.info(Test.nameOfClassAndMethod() + " Dpcument " + document.toJson());
+          
             Jsonb jsonb = JsonbBuilder.create();
             planeta = jsonb.fromJson(document.toJson(), Planeta.class);
         } catch (Exception e) {

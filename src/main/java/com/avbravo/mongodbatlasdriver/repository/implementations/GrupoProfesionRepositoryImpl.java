@@ -4,7 +4,6 @@
  */
 package com.avbravo.mongodbatlasdriver.repository.implementations;
 
-import com.avbravo.jmoordb.core.lookup.enumerations.LookupSupplierLevel;
 import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Grupoprofesion;
 import com.avbravo.mongodbatlasdriver.repository.GrupoprofesionRepository;
@@ -31,8 +30,9 @@ import org.eclipse.microprofile.config.Config;
 @ApplicationScoped
 //@Stateless
 public class GrupoProfesionRepositoryImpl implements GrupoprofesionRepository {
-      // <editor-fold defaultstate="collapsed" desc="level">
-     LookupSupplierLevel levelLocal= LookupSupplierLevel.ZERO;
+   // <editor-fold defaultstate="collapsed" desc="Supplier">
+    @Inject
+    GrupoprofesionSupplier grupoprofesionSupplier;
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="@Inject">
 
@@ -60,8 +60,7 @@ public class GrupoProfesionRepositoryImpl implements GrupoprofesionRepository {
             Jsonb jsonb = JsonbBuilder.create();
             try {
                 while (cursor.hasNext()) {
-                    Grupoprofesion grupoprofesion = GrupoprofesionSupplier.get(Grupoprofesion::new,cursor.next());                   
-                    list.add(grupoprofesion);
+                    list.add(grupoprofesionSupplier.get(Grupoprofesion::new,cursor.next()));
                 }
             } finally {
                 cursor.close();
@@ -82,7 +81,7 @@ public class GrupoProfesionRepositoryImpl implements GrupoprofesionRepository {
             MongoCollection<Document> collection = database.getCollection("grupoprofesion");
             Document doc = collection.find(eq("idgrupoprofesion", id)).first();
            
-            Grupoprofesion grupoprofesion = GrupoprofesionSupplier.get(Grupoprofesion::new,doc);
+            Grupoprofesion grupoprofesion = grupoprofesionSupplier.get(Grupoprofesion::new,doc);
 
             return Optional.of(grupoprofesion);
         } catch (Exception e) {

@@ -66,8 +66,8 @@ public class PlanetaRepositoryImpl implements PlanetaRepository {
             Jsonb jsonb = JsonbBuilder.create();
             try {
                 while (cursor.hasNext()) {
-                    Planeta planeta = planetaSupplier.get(Planeta::new,cursor.next());                   
-                    list.add(planeta);
+                    
+                    list.add(planetaSupplier.get(Planeta::new,cursor.next()));
                 }
             } finally {
                 cursor.close();

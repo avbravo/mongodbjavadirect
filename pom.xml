@@ -19,7 +19,7 @@
         <version.payara>5.2022.2</version.payara>
         <microprofile.version>4.0.1</microprofile.version>
         <final.version>mongodbatlasdriver</final.version>
-        
+        <jmh.version>1.35</jmh.version>
     </properties>
     
     <dependencies>
@@ -87,8 +87,19 @@
             <version>5.2.0</version>
             <type>jar</type>
         </dependency>
+        
+        <!--
+        benchmark
+        -->
+
+
+<!--	<dependency>
+		<groupId>org.openjdk.jmh</groupId>
+		<artifactId>jmh-core</artifactId>
+		<version>${jmh.version}</version>
+	</dependency>-->
+
     </dependencies>
-    
     <build>
         <!--<finalName>${final.name}</finalName>-->
         <plugins>
