@@ -4,25 +4,31 @@
  */
 package com.avbravo.mongodbatlasdriver.supplier;
 
-import com.avbravo.jmoordb.core.lookup.enumerations.LookupSupplierLevel;
-import com.avbravo.jmoordb.core.util.ConsoleUtil;
+import com.avbravo.jmoordb.core.annotation.Referenced;
+import com.avbravo.jmoordb.core.util.DocumentUtil;
 import com.avbravo.jmoordb.core.util.Test;
-import com.avbravo.mongodbatlasdriver.model.Corregimiento;
 import com.avbravo.mongodbatlasdriver.model.Persona;
+import com.avbravo.mongodbatlasdriver.model.Corregimiento;
 import com.avbravo.mongodbatlasdriver.model.Profesion;
+import com.avbravo.mongodbatlasdriver.supplier.services.CorregimientoSupplierServices;
+import com.avbravo.mongodbatlasdriver.supplier.services.ProfesionSupplierServices;
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import org.bson.Document;
 
 /**
  *
  * @author avbravo
  */
-public class PersonaSupplier {
-    // <editor-fold defaultstate="collapsed" desc="level">
+@RequestScoped
+public class PersonaSupplier implements Serializable{
 
-    LookupSupplierLevel levelLocal = LookupSupplierLevel.THREE;
-// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="graphics">
 
     /**
@@ -31,7 +37,7 @@ public class PersonaSupplier {
      * @Referenced Corregimiento{
      * @Referenced Provincia{
      * @Referenced Pais{
-     * @Referenced Planeta{}
+     * @Referenced Corregimiento{}
      * @Referenced Oceano{}
      * @Embedded Idioma idioma;
      * @Embedded List<Musica>; } } }
@@ -39,83 +45,143 @@ public class PersonaSupplier {
      * @Referenced Grupopresion{ } }
      */
 // </editor-fold>
+    
+       // <editor-fold defaultstate="collapsed" desc="@Inject">
+    @Inject
+    CorregimientoSupplierServices corregimientoSupplierServices;
+    @Inject
+    ProfesionSupplierServices profesionSupplierServices;
+//    @Inject
+//    ProfesionRepository profesionRepository;
+   
+// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Persona get(Supplier<? extends Persona> s, Document document)">
-    public static Persona get(Supplier<? extends Persona> s, Document document) {
+    public  Persona get(Supplier<? extends Persona> s, Document document) {
         Persona persona = s.get();
         try {
-            ConsoleUtil.info(Test.nameOfClassAndMethod() + "Document.toJson()  " + document.toJson());
+         
 
             persona.setIdpersona(String.valueOf(document.get("idpersona")));
             persona.setNombre(String.valueOf(document.get("nombre")));
+/**
+ * Corregimiento
+ */
+            Referenced corregimientoReferenced = new Referenced() {
+                @Override
+                public String from() {
+                    return "corregimiento";
+                }
 
-            Boolean istListReferecendToCorregimiento = false;
-            Boolean istListReferecendToProfesion = false;
+                @Override
+                public String localField() {
+                    return "corregimiento.idcorregimiento";
+                }
 
-            List<Document> documentCorregimientoList = (List<Document>) document.get("corregimiento");
-            List<Document> documentProvinciaList = (List<Document>) document.get("provincia");
-            List<Document> documentPaisList = (List<Document>) document.get("pais");
-            List<Document> documentPlanetaList = (List<Document>) document.get("planeta");
-            List<Document> documentOceanoList = (List<Document>) document.get("oceano");
+                @Override
+                public String foreignField() {
+                    return "idcorregimiento";
+                }
+
+                @Override
+                public String as() {
+                    return "corregimiento";
+                }
+
+                @Override
+                public boolean lazy() {
+                    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                }
+
+                @Override
+                public Class<? extends Annotation> annotationType() {
+                    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                }
+
+                @Override
+                public boolean typeFieldkeyString() {
+                    return true;
+                }
+            };
+
             /**
-             * persona-->prefesion-->grupoprofesion
+             * Crear una variable del tipo y valor de Referenced.foreigndFiel()
+             * Verificar el tipo keyString()
+             *
              */
-            List<Document> documentProfesionList = (List<Document>) document.get("profesion");
-            List<Document> documentGrupoprofesionList = (List<Document>) document.get("grupoprofesion");
-            Document docPais;
+            Boolean istListReferecendToCorregimiento = false;
             if (!istListReferecendToCorregimiento) {
-          //      persona.setCorregimiento(CorregimientoSupplier.get(Corregimiento::new, documentCorregimientoList, documentProvinciaList, documentPaisList, documentPlanetaList, documentOceanoList));
+                Optional<Corregimiento> corregimientoOptional = corregimientoSupplierServices.findByPK(document, corregimientoReferenced);
+                if (corregimientoOptional.isPresent()) {
+                    persona.setCorregimiento(corregimientoOptional.get());
+                } else {
+                    Test.warning("No tiene referencia a Corregimiento");
+                }
             } else {
-                Test.warning(Test.nameOfClassAndMethod() + " No se permite @Referenced List<>");
-                /**
-                 * En nivel 2 no se permiten @Referenced List<Nivel1>
-                 * de una entidad de nivel 1 ya que complica la evaluación
-                 *
-                 */
 
-                /**
-                 * Lista de Referenciados Recorre cada elemento y lo carga en un
-                 * List<Entidad>
-                 * Luego lo asigna al atributo de la entidad superior
-                 */
-//                List<Corregimiento> corregimientoList = new ArrayList<>();
-//                if (documentCorregimientoList.isEmpty() || documentCorregimientoList.size() == 0) {
-//                    Test.warning("No hay registros de pais");
-//                } else {
-//                    documentCorregimientoList.forEach(varDoc -> {
-//                       paisList.add(CorregimientoSupplier.get(Corregimiento::new, varDoc));
-//                    });
-//                }
-//               persona.setCorregimiento(corregimientoList);
+                List<Corregimiento> corregimientoList = corregimientoSupplierServices.findAllByPK(document, corregimientoReferenced);
+              //persona.setCorregimiento(corregimientoList);
             }
-            
-            
-            
-           if (!istListReferecendToProfesion) {
-                persona.setProfesion(ProfesionSupplier.get(Profesion::new, documentProfesionList, documentGrupoprofesionList));
-           } else {
-//                Test.warning(Test.nameOfClassAndMethod() + " No se permite @Referenced List<>");
-//                /**
-//                 * En nivel 2 no se permiten @Referenced List<Nivel1>
-//                 * de una entidad de nivel 1 ya que complica la evaluación
-//                 *
-//                 */
-//
-//                /**
-//                 * Lista de Referenciados Recorre cada elemento y lo carga en un
-//                 * List<Entidad>
-//                 * Luego lo asigna al atributo de la entidad superior
-//                 */
-////                List<Corregimiento> corregimientoList = new ArrayList<>();
-////                if (documentCorregimientoList.isEmpty() || documentCorregimientoList.size() == 0) {
-////                    Test.warning("No hay registros de pais");
-////                } else {
-////                    documentCorregimientoList.forEach(varDoc -> {
-////                       paisList.add(CorregimientoSupplier.get(Corregimiento::new, varDoc));
-////                    });
-////                }
-////               persona.setCorregimiento(corregimientoList);
-           }
 
+            
+            /**
+             * Profesion
+             */
+              Referenced profesionReferenced = new Referenced() {
+                @Override
+                public String from() {
+                    return "profesion";
+                }
+
+                @Override
+                public String localField() {
+                    return "profesion.idprofesion";
+                }
+
+                @Override
+                public String foreignField() {
+                    return "idprofesion";
+                }
+
+                @Override
+                public String as() {
+                    return "profesion";
+                }
+
+                @Override
+                public boolean lazy() {
+                    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                }
+
+                @Override
+                public Class<? extends Annotation> annotationType() {
+                    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                }
+
+                @Override
+                public boolean typeFieldkeyString() {
+                    return true;
+                }
+            };
+
+            /**
+             * Crear una variable del tipo y valor de Referenced.foreigndFiel()
+             * Verificar el tipo keyString()
+             *
+             */
+            Boolean istListReferecendToProfesion = false;
+            if (!istListReferecendToProfesion) {
+                Optional<Profesion> profesionOptional = profesionSupplierServices.findByPK(document, profesionReferenced); 
+                if (profesionOptional.isPresent()) {
+                    persona.setProfesion(profesionOptional.get());
+                } else {
+                    Test.warning("No tiene referencia a Corregimiento");
+                }
+            } else {
+
+
+               List<Profesion> profesionList = profesionSupplierServices.findAllByPK(document, profesionReferenced);
+              //persona.setProfesion(profesionList);
+            }
         } catch (Exception e) {
             Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
         }
@@ -124,89 +190,6 @@ public class PersonaSupplier {
 
     }
 // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="Persona get(Supplier<? extends Persona> s, List<Document> documentPersonaList,List<Document> documentCorregimientoList,List<Document> documentProvinciaList, List<Document> documentPaisList, List<Document> documentPlanetaList,    List<Document> documentOceanoList)">
-
-    public static Persona get(Supplier<? extends Persona> s, List<Document> documentPersonaList, List<Document> documentCorregimientoList, List<Document> documentProvinciaList, List<Document> documentPaisList, List<Document> documentPlanetaList, List<Document> documentOceanoList, List<Document> documentProfesionList, List<Document> documentGrupoprofesionList) {
-        Persona persona = s.get();
-        try {
-            Document document = documentPersonaList.get(0);
-            ConsoleUtil.info(Test.nameOfClassAndMethod() + "Document.toJson()  " + document.toJson());
-
-            persona.setIdpersona(String.valueOf(document.get("idpersona")));
-            persona.setNombre(String.valueOf(document.get("nombre")));
-
-            Boolean istListReferecendToCorregimiento = false;
-            Boolean istListReferecendToProfesion = false;
-
-//            List<Document> documentCorregimientoList = (List<Document>) document.get("corregimiento");
-//            List<Document> documentProvinciaList = (List<Document>) document.get("provincia");
-//            List<Document> documentPaisList = (List<Document>) document.get("pais");
-//            List<Document> documentPlanetaList = (List<Document>) document.get("planeta");
-//            List<Document> documentOceanoList = (List<Document>) document.get("oceano");
-            /**
-             * persona-->prefesion-->grupoprofesion
-             */
-//            List<Document> documentProfesionList = (List<Document>) document.get("profesion");
-//            List<Document> documentGrupoprofesionList = (List<Document>) document.get("grupoprofesion");
-            Document docPais;
-            if (!istListReferecendToCorregimiento) {
-          //      persona.setCorregimiento(CorregimientoSupplier.get(Corregimiento::new, documentCorregimientoList, documentProvinciaList, documentPaisList, documentPlanetaList, documentOceanoList));
-            } else {
-                Test.warning(Test.nameOfClassAndMethod() + " No se permite @Referenced List<>");
-                /**
-                 * En nivel 2 no se permiten @Referenced List<Nivel1>
-                 * de una entidad de nivel 1 ya que complica la evaluación
-                 *
-                 */
-
-                /**
-                 * Lista de Referenciados Recorre cada elemento y lo carga en un
-                 * List<Entidad>
-                 * Luego lo asigna al atributo de la entidad superior
-                 */
-//                List<Corregimiento> corregimientoList = new ArrayList<>();
-//                if (documentCorregimientoList.isEmpty() || documentCorregimientoList.size() == 0) {
-//                    Test.warning("No hay registros de pais");
-//                } else {
-//                    documentCorregimientoList.forEach(varDoc -> {
-//                       paisList.add(CorregimientoSupplier.get(Corregimiento::new, varDoc));
-//                    });
-//                }
-//               persona.setCorregimiento(corregimientoList);
-            }
-//            if (!istListReferecendToProfesion) {
-//                persona.setProfesion(ProfesionSupplier.get(Profesion::new, documentProfesionList, documentGrupoprofesionList));
-//            } else {
-//                Test.warning(Test.nameOfClassAndMethod() + " No se permite @Referenced List<>");
-//                /**
-//                 * En nivel 2 no se permiten @Referenced List<Nivel1>
-//                 * de una entidad de nivel 1 ya que complica la evaluación
-//                 *
-//                 */
-//
-//                /**
-//                 * Lista de Referenciados Recorre cada elemento y lo carga en un
-//                 * List<Entidad>
-//                 * Luego lo asigna al atributo de la entidad superior
-//                 */
-////                List<Profesion> profesionList = new ArrayList<>();
-////                if (documentProfesionList.isEmpty() || documentProfesionList.size() == 0) {
-////                    Test.warning("No hay registros de pais");
-////                } else {
-////                    documentProfesionList.forEach(varDoc -> {
-////                       profesionList.add(ProfesionSupplier.get(Profesion::new, varDoc));
-////                    });
-////                }
-////               persona.setCorregimiento(corregimientoList);
-//            }
-
-        } catch (Exception e) {
-            Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
-        }
-
-        return persona;
-
-    }
-// </editor-fold>
+    
 
 }

@@ -227,7 +227,8 @@ public class PaisSupplier implements Serializable {
 
             Boolean istListReferecendToOceano = true;
             if (!istListReferecendToOceano) {
-                Optional<Oceano> oceanoOptional = oceanoFindPK(document, oceanoReferenced);
+               Optional<Oceano> oceanoOptional = oceanoFindPK(document, oceanoReferenced);
+                
                 if (oceanoOptional.isPresent()) {
                     //   pais.setOceano(oceanoOptional.get());
                 } else {
@@ -298,7 +299,7 @@ public class PaisSupplier implements Serializable {
         return Optional.empty();
     }
 // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="Optional<Planeta> oceanoFindPK(Document document, Referenced planetaReferenced)">
+    // <editor-fold defaultstate="collapsed" desc="Optional<Oceano> oceanoFindPK(Document document, Referenced planetaReferenced)">
 
     /**
      *

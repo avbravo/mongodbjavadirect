@@ -10,11 +10,13 @@ import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Corregimiento;
 import com.avbravo.mongodbatlasdriver.model.Provincia;
 import com.avbravo.mongodbatlasdriver.repository.ProvinciaRepository;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import org.bson.Document;
 
@@ -22,7 +24,8 @@ import org.bson.Document;
  *
  * @author avbravo
  */
-public class CorregimientoSupplier {
+@RequestScoped
+public class CorregimientoSupplier implements Serializable{
 
     // <editor-fold defaultstate="collapsed" desc="grephics">
     /**

@@ -4,25 +4,29 @@
  */
 package com.avbravo.mongodbatlasdriver.supplier;
 
-import com.avbravo.jmoordb.core.lookup.enumerations.LookupSupplierLevel;
-import com.avbravo.jmoordb.core.util.ConsoleUtil;
+import com.avbravo.jmoordb.core.annotation.Referenced;
+import com.avbravo.jmoordb.core.util.DocumentUtil;
 import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Grupoprofesion;
+import com.avbravo.mongodbatlasdriver.model.Grupoprofesion;
 import com.avbravo.mongodbatlasdriver.model.Profesion;
-import com.avbravo.mongodbatlasdriver.model.Provincia;
+import com.avbravo.mongodbatlasdriver.repository.GrupoprofesionRepository;
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import org.bson.Document;
 
 /**
  *
  * @author avbravo
  */
-public class ProfesionSupplier {
-    // <editor-fold defaultstate="collapsed" desc="level">
-
-    LookupSupplierLevel levelLocal = LookupSupplierLevel.ONE;
-// </editor-fold>
+@RequestScoped
+public class ProfesionSupplier implements Serializable{
        // <editor-fold defaultstate="collapsed" desc="graphics">
 
     /**
@@ -31,56 +35,95 @@ public class ProfesionSupplier {
      * @Referenced Grupopresion{ } }
      */
 // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="@Inject">
+    @Inject
+GrupoprofesionRepository grupoprofesionRepository;
+    
+// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Profesion get(Supplier<? extends Profesion> s, Document document)">
 
-    public static Profesion get(Supplier<? extends Profesion> s, Document document) {
+    public  Profesion get(Supplier<? extends Profesion> s, Document document) {
         Profesion profesion = s.get();
         try {
-            ConsoleUtil.info(Test.nameOfClassAndMethod() + "Document.toJson()  " + document.toJson());
+            
 
             profesion.setIdprofesion(String.valueOf(document.get("idprofesion")));
             profesion.setProfesion(String.valueOf(document.get("profesion")));
 
-            Boolean istListReferecendToGrupoprofesion = false;
+            Referenced grupoprofesionReferenced = new Referenced() {
+                @Override
+                public String from() {
+                    return "grupoprofesion";
+                }
+
+                @Override
+                public String localField() {
+                    return "grupoprofesion.idgrupoprofesion";
+                }
+
+                @Override
+                public String foreignField() {
+                    return "idgrupoprofesion";
+                }
+
+                @Override
+                public String as() {
+                    return "grupoprofesion";
+                }
+
+                @Override
+                public boolean lazy() {
+                    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                }
+
+                @Override
+                public Class<? extends Annotation> annotationType() {
+                    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                }
+
+                @Override
+                public boolean typeFieldkeyString() {
+                    return true;
+                }
+            };
+
             /**
-             * Esto aplica para nivel 2 donde hay que conocer los padres que
-             * tiene Se debe conocer de la entidad de siguente nivel Pais cuales
-             * son sus referencias para pasarlos como List<Document>
-             * Profesion{
-             *
-             * @Referenced Grupoprofesion{ } }
-             *
-             * Se puede observar que hay referencias de nivel 3: Nivel 1 -->
-             * Nivel 0 Profesion -->@R Grupoprofesion
+             * Crear una variable del tipo y valor de Referenced.foreigndFiel()
+             * Verificar el tipo keyString()
              *
              */
-
-            List<Document> documentGrupoprofesionList = (List<Document>) document.get("grupoprofesion");
-
-            Document docPais;
+            Boolean istListReferecendToGrupoprofesion = false;
             if (!istListReferecendToGrupoprofesion) {
-                profesion.setGrupoprofesion(GrupoprofesionSupplier.get(Grupoprofesion::new, documentGrupoprofesionList));
+                Optional<Grupoprofesion> grupoprofesionOptional = grupoprofesionFindPK(document, grupoprofesionReferenced);
+                if (grupoprofesionOptional.isPresent()) {
+                   profesion.setGrupoprofesion(grupoprofesionOptional.get());
+                } else {
+                    Test.warning("No tiene referencia a Grupoprofesion");
+                }
             } else {
-                /**
-                 * En nivel 2 no se permiten @Referenced List<Nivel1>
-                 * de una entidad de nivel 1 ya que complica la evaluación
-                 *
-                 */
 
                 /**
-                 * Lista de Referenciados Recorre cada elemento y lo carga en un
-                 * List<Entidad>
-                 * Luego lo asigna al atributo de la entidad superior
+                 * Pasos para @Referenced List<>
+                 * 1- Obtener la lista documento 2- Obtener un List<SDocument>
+                 * de las llaves primarias
                  */
-//                List<Grupoprofesion> grupoprofesionList = new ArrayList<>();
-//                if (documentGrupoprofesionList.isEmpty() || documentGrupoprofesionList.size() == 0) {
-//                    Test.warning("No hay registros de grupoprofesion");
-//                } else {
-//                    documentGrupoprofesionList.forEach(varDoc -> {
-//                       grupoprofesionList.add(GrupoprofesionSupplier.get(Grupoprofesion::new, varDoc));
-//                    });
-//                }
-//                profesion.setGrupoprofesion(grupoprofesionList);
+                List<Document> documentGrupoprofesionList = (List<Document>) document.get(grupoprofesionReferenced.from());
+                List<Grupoprofesion> grupoprofesionList = new ArrayList<>();
+                List<Document> documentGrupoprofesionPkList = DocumentUtil.getListValue(document, grupoprofesionReferenced);
+                if (documentGrupoprofesionPkList == null || documentGrupoprofesionPkList.isEmpty()) {
+                    Test.msg("No se pudo decomponer la lista de id referenced....");
+                } else {
+                    for (Document documentPk : documentGrupoprofesionPkList) {
+                        Optional<Grupoprofesion> grupoprofesionOptional = grupoprofesionFindPK(documentPk, grupoprofesionReferenced);
+                        if (grupoprofesionOptional.isPresent()) {
+                            grupoprofesionList.add(grupoprofesionOptional.get());
+                        } else {
+                            Test.warning("No tiene referencia a " + grupoprofesionReferenced.from());
+                        }
+                    }
+                }
+              //profesion.setGrupoprofesion(grupoprofesionList);
             }
 
         } catch (Exception e) {
@@ -91,66 +134,33 @@ public class ProfesionSupplier {
 
     }
 // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="Profesion get(Supplier<? extends Profesion> s, Document document)">
-
-    public static Profesion get(Supplier<? extends Profesion> s, List<Document> documentProfesionList, List<Document>  documentGrupoprofesionList) {
-        Profesion profesion = s.get();
+   
+    
+      // <editor-fold defaultstate="collapsed" desc="Optional<Grupoprofesion> grupoprofesionFindPK(Document document, Referenced grupoprofesionReferenced)">
+    /**
+     *
+     * @param document
+     * @param grupoprofesionReferenced
+     * @return Devuelve un Optional del resultado de la busqueda por la llave
+     * primaria Dependiendo si es entero o String
+     */
+    private Optional<Grupoprofesion> grupoprofesionFindPK(Document document, Referenced grupoprofesionReferenced) {
         try {
-            Document document = documentProfesionList.get(0);
-            ConsoleUtil.info(Test.nameOfClassAndMethod() + "Document.toJson()  " + document.toJson());
-
-            profesion.setIdprofesion(String.valueOf(document.get("idprofesion")));
-            profesion.setProfesion(String.valueOf(document.get("profesion")));
-
-            Boolean istListReferecendToGrupoprofesion = false;
-            /**
-             * Esto aplica para nivel 2 donde hay que conocer los padres que
-             * tiene Se debe conocer de la entidad de siguente nivel Pais cuales
-             * son sus referencias para pasarlos como List<Document>
-             * Profesion{
-             *
-             * @Referenced Grupoprofesion{ } }
-             *
-             * Se puede observar que hay referencias de nivel 3: Nivel 1 -->
-             * Nivel 0 Profesion -->@R Grupoprofesion
-             *
-             */
-
-//            List<Document> documentGrupoprofesionList = (List<Document>) document.get("grupoprofesion");
-
-            Document docPais;
-            if (!istListReferecendToGrupoprofesion) {
-                profesion.setGrupoprofesion(GrupoprofesionSupplier.get(Grupoprofesion::new, documentGrupoprofesionList));
+            Optional<Grupoprofesion> grupoprofesionOptional = Optional.empty();
+            if (grupoprofesionReferenced.typeFieldkeyString()) {
+              grupoprofesionOptional = grupoprofesionRepository.findById(DocumentUtil.getIdValue(document, grupoprofesionReferenced));
             } else {
-                /**
-                 * En nivel 2 no se permiten @Referenced List<Nivel1>
-                 * de una entidad de nivel 1 ya que complica la evaluación
-                 *
-                 */
+                //     grupoprofesionOptional = grupoprofesionRepository.findById(Integer.parseInt(DocumentUtil.getIdValue(document, grupoprofesionReferenced)));
+            }
 
-                /**
-                 * Lista de Referenciados Recorre cada elemento y lo carga en un
-                 * List<Entidad>
-                 * Luego lo asigna al atributo de la entidad superior
-                 */
-//                List<Grupoprofesion> grupoprofesionList = new ArrayList<>();
-//                if (documentGrupoprofesionList.isEmpty() || documentGrupoprofesionList.size() == 0) {
-//                    Test.warning("No hay registros de grupoprofesion");
-//                } else {
-//                    documentGrupoprofesionList.forEach(varDoc -> {
-//                       grupoprofesionList.add(GrupoprofesionSupplier.get(Grupoprofesion::new, varDoc));
-//                    });
-//                }
-//                profesion.setGrupoprofesion(grupoprofesionList);
+            if (grupoprofesionOptional.isPresent()) {
+                return grupoprofesionOptional;
             }
 
         } catch (Exception e) {
-            Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
+            Test.error(Test.nameOfClassAndMethod() + " error() " + e.getLocalizedMessage());
         }
-
-        return profesion;
-
+        return Optional.empty();
     }
 // </editor-fold>
-
 }

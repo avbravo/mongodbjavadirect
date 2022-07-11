@@ -15,7 +15,7 @@ import java.util.Optional;
  * @author avbravo
  */
 @Repository(entity = Oceano.class,jakarta = false)
-public interface OceanoRepository {            
+public interface OceanoRepository{            
     @Query(value="select * from oceano")
     public List<Oceano> findAll();    
     @Query(value="select * from oceano where idoceano = :id")
