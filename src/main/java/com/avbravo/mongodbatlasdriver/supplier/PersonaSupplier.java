@@ -63,7 +63,7 @@ public class PersonaSupplier {
             List<Document> documentGrupoprofesionList = (List<Document>) document.get("grupoprofesion");
             Document docPais;
             if (!istListReferecendToCorregimiento) {
-                persona.setCorregimiento(CorregimientoSupplier.get(Corregimiento::new, documentCorregimientoList, documentProvinciaList, documentPaisList, documentPlanetaList, documentOceanoList));
+          //      persona.setCorregimiento(CorregimientoSupplier.get(Corregimiento::new, documentCorregimientoList, documentProvinciaList, documentPaisList, documentPlanetaList, documentOceanoList));
             } else {
                 Test.warning(Test.nameOfClassAndMethod() + " No se permite @Referenced List<>");
                 /**
@@ -150,7 +150,7 @@ public class PersonaSupplier {
 //            List<Document> documentGrupoprofesionList = (List<Document>) document.get("grupoprofesion");
             Document docPais;
             if (!istListReferecendToCorregimiento) {
-                persona.setCorregimiento(CorregimientoSupplier.get(Corregimiento::new, documentCorregimientoList, documentProvinciaList, documentPaisList, documentPlanetaList, documentOceanoList));
+          //      persona.setCorregimiento(CorregimientoSupplier.get(Corregimiento::new, documentCorregimientoList, documentProvinciaList, documentPaisList, documentPlanetaList, documentOceanoList));
             } else {
                 Test.warning(Test.nameOfClassAndMethod() + " No se permite @Referenced List<>");
                 /**
