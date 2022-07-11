@@ -174,33 +174,7 @@ public class ProvinciaSupplier implements Serializable{
     }
 // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Optional<Pais> planetaFindPK(Document document, Referenced paisReferenced)">
-    /**
-     *
-     * @param document
-     * @param planetaReferenced
-     * @return Devuelve un Optional del resultado de la busqueda por la llave
-     * primaria Dependiendo si es entero o String
-     */
-    private Optional<Pais> paisFindPK(Document document, Referenced paisReferenced) {
-        try {
-            Optional<Pais> paisOptional = Optional.empty();
-            if (paisReferenced.typeFieldkeyString()) {
-                paisOptional = paisRepository.findById(DocumentUtil.getIdValue(document, paisReferenced));
-            } else {
-                //     paisOptional = paisRepository.findById(Integer.parseInt(DocumentUtil.getIdValue(document, paisReferenced)));
-            }
-
-            if (paisOptional.isPresent()) {
-                return paisOptional;
-            }
-
-        } catch (Exception e) {
-            Test.error(Test.nameOfClassAndMethod() + " error() " + e.getLocalizedMessage());
-        }
-        return Optional.empty();
-    }
-// </editor-fold>
+    
   
 
 }

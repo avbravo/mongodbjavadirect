@@ -10,6 +10,7 @@ import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Corregimiento;
 import com.avbravo.mongodbatlasdriver.model.Provincia;
 import com.avbravo.mongodbatlasdriver.repository.ProvinciaRepository;
+import com.avbravo.mongodbatlasdriver.supplier.services.ProvinciaSupplierServices;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class CorregimientoSupplier implements Serializable{
      */
     // <editor-fold defaultstate="collapsed" desc="@Inject">
     @Inject
-    ProvinciaRepository provinciaRepository;
+    ProvinciaSupplierServices provinciaSupplierServices;
    
 // </editor-fold>
 
@@ -132,7 +133,7 @@ public class CorregimientoSupplier implements Serializable{
              */
             Boolean istListReferecendToProvincia = false;
             if (!istListReferecendToProvincia) {
-                Optional<Provincia> provinciaOptional = provinciaFindPK(document, provinciaReferenced);
+                Optional<Provincia> provinciaOptional = provinciaSupplierServices.findByPK(document, provinciaReferenced);
                 if (provinciaOptional.isPresent()) {
                    corregimiento.setProvincia(provinciaOptional.get());
                 } else {
@@ -145,21 +146,9 @@ public class CorregimientoSupplier implements Serializable{
                  * 1- Obtener la lista documento 2- Obtener un List<SDocument>
                  * de las llaves primarias
                  */
-                List<Document> documentProvinciaList = (List<Document>) document.get(provinciaReferenced.from());
-                List<Provincia> provinciaList = new ArrayList<>();
-                List<Document> documentProvinciaPkList = DocumentUtil.getListValue(document, provinciaReferenced);
-                if (documentProvinciaPkList == null || documentProvinciaPkList.isEmpty()) {
-                    Test.msg("No se pudo decomponer la lista de id referenced....");
-                } else {
-                    for (Document documentPk : documentProvinciaPkList) {
-                        Optional<Provincia> provinciaOptional = provinciaFindPK(documentPk, provinciaReferenced);
-                        if (provinciaOptional.isPresent()) {
-                            provinciaList.add(provinciaOptional.get());
-                        } else {
-                            Test.warning("No tiene referencia a " + provinciaReferenced.from());
-                        }
-                    }
-                }
+              
+                List<Provincia> provinciaList = provinciaSupplierServices.findAllByPK(document, provinciaReferenced);
+              
               //provincia.setPais(paisList);
             }
            
@@ -174,33 +163,7 @@ public class CorregimientoSupplier implements Serializable{
     }
 // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Optional<Pais> planetaFindPK(Document document, Referenced paisReferenced)">
-    /**
-     *
-     * @param document
-     * @param planetaReferenced
-     * @return Devuelve un Optional del resultado de la busqueda por la llave
-     * primaria Dependiendo si es entero o String
-     */
-    private Optional<Provincia> provinciaFindPK(Document document, Referenced provinciaReferenced) {
-        try {
-            Optional<Provincia> provinciaOptional = Optional.empty();
-            if (provinciaReferenced.typeFieldkeyString()) {
-                provinciaOptional = provinciaRepository.findById(DocumentUtil.getIdValue(document, provinciaReferenced));
-            } else {
-                //    provinciaOptional = provinciaRepository.findById(Integer.parseInt(DocumentUtil.getIdValue(document, provinciaReferenced)));
-            }
-
-            if (provinciaOptional.isPresent()) {
-                return provinciaOptional;
-            }
-
-        } catch (Exception e) {
-            Test.error(Test.nameOfClassAndMethod() + " error() " + e.getLocalizedMessage());
-        }
-        return Optional.empty();
-    }
-// </editor-fold>
+   
   
 
 }

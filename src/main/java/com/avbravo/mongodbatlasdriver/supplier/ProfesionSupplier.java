@@ -136,31 +136,5 @@ GrupoprofesionRepository grupoprofesionRepository;
 // </editor-fold>
    
     
-      // <editor-fold defaultstate="collapsed" desc="Optional<Grupoprofesion> grupoprofesionFindPK(Document document, Referenced grupoprofesionReferenced)">
-    /**
-     *
-     * @param document
-     * @param grupoprofesionReferenced
-     * @return Devuelve un Optional del resultado de la busqueda por la llave
-     * primaria Dependiendo si es entero o String
-     */
-    private Optional<Grupoprofesion> grupoprofesionFindPK(Document document, Referenced grupoprofesionReferenced) {
-        try {
-            Optional<Grupoprofesion> grupoprofesionOptional = Optional.empty();
-            if (grupoprofesionReferenced.typeFieldkeyString()) {
-              grupoprofesionOptional = grupoprofesionRepository.findById(DocumentUtil.getIdValue(document, grupoprofesionReferenced));
-            } else {
-                //     grupoprofesionOptional = grupoprofesionRepository.findById(Integer.parseInt(DocumentUtil.getIdValue(document, grupoprofesionReferenced)));
-            }
-
-            if (grupoprofesionOptional.isPresent()) {
-                return grupoprofesionOptional;
-            }
-
-        } catch (Exception e) {
-            Test.error(Test.nameOfClassAndMethod() + " error() " + e.getLocalizedMessage());
-        }
-        return Optional.empty();
-    }
-// </editor-fold>
+    
 }
