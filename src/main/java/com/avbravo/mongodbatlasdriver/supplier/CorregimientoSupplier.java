@@ -18,9 +18,7 @@ import org.bson.Document;
  * @author avbravo
  */
 public class CorregimientoSupplier {
-  // <editor-fold defaultstate="collapsed" desc="level">
-        LookupSupplierLevel levelLocal= LookupSupplierLevel.THREE;
-// </editor-fold>
+
     // <editor-fold defaultstate="collapsed" desc="grephics">
     /**
      *
@@ -77,7 +75,7 @@ ConsoleUtil.info(Test.nameOfClassAndMethod() + "Document.toJson()  "+document.to
 
             Document docPais;
             if (! istListReferecendToProvincia ) {
-             corregimiento.setProvincia(ProvinciaSupplier.get(Provincia::new, documentProvinciaList, documentPaisList, documentPlanetaList, documentOceanoList));
+       //      corregimiento.setProvincia(provinciaSupplier.get(Provincia::new, documentProvinciaList, documentPaisList, documentPlanetaList, documentOceanoList));
             } else {
                 /**
                  * En nivel 2 no se permiten @Referenced List<Nivel1>
@@ -153,7 +151,7 @@ ConsoleUtil.info(Test.nameOfClassAndMethod() + "Document.toJson()  "+document.to
 
             Document docPais;
             if (! istListReferecendToProvincia ) {
-             corregimiento.setProvincia(ProvinciaSupplier.get(Provincia::new, documentProvinciaList, documentPaisList, documentPlanetaList, documentOceanoList));
+       //      corregimiento.setProvincia(ProvinciaSupplier.get(Provincia::new, documentProvinciaList, documentPaisList, documentPlanetaList, documentOceanoList));
             } else {
                 /**
                  * En nivel 2 no se permiten @Referenced List<Nivel1>

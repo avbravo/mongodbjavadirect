@@ -60,8 +60,7 @@ public class ProvinciaRepositoryImpl implements ProvinciaRepository {
             try {
                 while (cursor.hasNext()) {
 
-                    Provincia provincia = provinciaSupplier.get(Provincia::new, cursor.next());
-                    list.add(provincia);
+                    list.add( provinciaSupplier.get(Provincia::new, cursor.next()));
                 }
             } finally {
                 cursor.close();
@@ -80,7 +79,7 @@ public class ProvinciaRepositoryImpl implements ProvinciaRepository {
             MongoCollection<Document> collection = database.getCollection("provincia");
             Document doc = collection.find(eq("idprovincia", id)).first();
            
-            Provincia provincia = ProvinciaSupplier.get(Provincia::new,doc);
+            Provincia provincia =provinciaSupplier.get(Provincia::new,doc);
 
             return Optional.of(provincia);
         } catch (Exception e) {
