@@ -8,9 +8,8 @@ import com.avbravo.jmoordb.core.annotation.Referenced;
 import com.avbravo.jmoordb.core.util.DocumentUtil;
 import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Grupoprofesion;
-import com.avbravo.mongodbatlasdriver.model.Grupoprofesion;
 import com.avbravo.mongodbatlasdriver.model.Profesion;
-import com.avbravo.mongodbatlasdriver.repository.GrupoprofesionRepository;
+import com.avbravo.mongodbatlasdriver.supplier.services.GrupoProfesionSupplierServices;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ public class ProfesionSupplier implements Serializable{
     
     // <editor-fold defaultstate="collapsed" desc="@Inject">
     @Inject
-GrupoprofesionRepository grupoprofesionRepository;
+GrupoProfesionSupplierServices grupoprofesionSupplierServices;
     
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Profesion get(Supplier<? extends Profesion> s, Document document)">
@@ -95,7 +94,7 @@ GrupoprofesionRepository grupoprofesionRepository;
              */
             Boolean istListReferecendToGrupoprofesion = false;
             if (!istListReferecendToGrupoprofesion) {
-                Optional<Grupoprofesion> grupoprofesionOptional = grupoprofesionFindPK(document, grupoprofesionReferenced);
+                Optional<Grupoprofesion> grupoprofesionOptional = grupoprofesionSupplierServices.findByPK(document, grupoprofesionReferenced);
                 if (grupoprofesionOptional.isPresent()) {
                    profesion.setGrupoprofesion(grupoprofesionOptional.get());
                 } else {
@@ -108,21 +107,9 @@ GrupoprofesionRepository grupoprofesionRepository;
                  * 1- Obtener la lista documento 2- Obtener un List<SDocument>
                  * de las llaves primarias
                  */
-                List<Document> documentGrupoprofesionList = (List<Document>) document.get(grupoprofesionReferenced.from());
-                List<Grupoprofesion> grupoprofesionList = new ArrayList<>();
-                List<Document> documentGrupoprofesionPkList = DocumentUtil.getListValue(document, grupoprofesionReferenced);
-                if (documentGrupoprofesionPkList == null || documentGrupoprofesionPkList.isEmpty()) {
-                    Test.msg("No se pudo decomponer la lista de id referenced....");
-                } else {
-                    for (Document documentPk : documentGrupoprofesionPkList) {
-                        Optional<Grupoprofesion> grupoprofesionOptional = grupoprofesionFindPK(documentPk, grupoprofesionReferenced);
-                        if (grupoprofesionOptional.isPresent()) {
-                            grupoprofesionList.add(grupoprofesionOptional.get());
-                        } else {
-                            Test.warning("No tiene referencia a " + grupoprofesionReferenced.from());
-                        }
-                    }
-                }
+               
+                List<Grupoprofesion> grupoprofesionList =grupoprofesionSupplierServices.findAllByPK(document, grupoprofesionReferenced);
+               
               //profesion.setGrupoprofesion(grupoprofesionList);
             }
 

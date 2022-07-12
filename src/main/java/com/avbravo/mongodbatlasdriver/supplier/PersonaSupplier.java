@@ -5,7 +5,6 @@
 package com.avbravo.mongodbatlasdriver.supplier;
 
 import com.avbravo.jmoordb.core.annotation.Referenced;
-import com.avbravo.jmoordb.core.util.DocumentUtil;
 import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Persona;
 import com.avbravo.mongodbatlasdriver.model.Corregimiento;
@@ -14,7 +13,6 @@ import com.avbravo.mongodbatlasdriver.supplier.services.CorregimientoSupplierSer
 import com.avbravo.mongodbatlasdriver.supplier.services.ProfesionSupplierServices;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;

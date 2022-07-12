@@ -26,7 +26,7 @@ import org.bson.Document;
  * @author avbravo
  */
 @RequestScoped
-public class CorregimientoSupplier implements Serializable{
+public class CorregimientoSupplier implements Serializable {
 
     // <editor-fold defaultstate="collapsed" desc="grephics">
     /**
@@ -45,12 +45,11 @@ public class CorregimientoSupplier implements Serializable{
     // <editor-fold defaultstate="collapsed" desc="@Inject">
     @Inject
     ProvinciaSupplierServices provinciaSupplierServices;
-   
-// </editor-fold>
 
+// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Provincia get(Supplier<? extends Provincia> s, Document document)">
     public Corregimiento get(Supplier<? extends Corregimiento> s, Document document) {
-       Corregimiento corregimiento = s.get();
+        Corregimiento corregimiento = s.get();
         try {
 
             /**
@@ -60,15 +59,14 @@ public class CorregimientoSupplier implements Serializable{
              * <Attributes and @Embedded>
              * --------------------------------------------------------
              */
-         corregimiento.setIdcorregimiento(String.valueOf(document.get("idcorregimiento")));
-          corregimiento.setCorregimiento(String.valueOf(document.get("corregimiento")));
+            corregimiento.setIdcorregimiento(String.valueOf(document.get("idcorregimiento")));
+            corregimiento.setCorregimiento(String.valueOf(document.get("corregimiento")));
 
             /**
              * ---------------------------------------------
              *
              * @Embedded simple ----------------------------------------------
              */
-           
             /**
              * --------------------------------------------------
              *
@@ -76,8 +74,6 @@ public class CorregimientoSupplier implements Serializable{
              * Debe utilizar una lista temporal para almacenar los valores
              * --------------------------------------------------
              */
-          
-
             /**
              * ------------------------------------------------
              *
@@ -88,7 +84,6 @@ public class CorregimientoSupplier implements Serializable{
              * DocumentUtil.getIdValue(...)
              *
              */
-           
             Referenced provinciaReferenced = new Referenced() {
                 @Override
                 public String from() {
@@ -135,7 +130,7 @@ public class CorregimientoSupplier implements Serializable{
             if (!istListReferecendToProvincia) {
                 Optional<Provincia> provinciaOptional = provinciaSupplierServices.findByPK(document, provinciaReferenced);
                 if (provinciaOptional.isPresent()) {
-                   corregimiento.setProvincia(provinciaOptional.get());
+                    corregimiento.setProvincia(provinciaOptional.get());
                 } else {
                     Test.warning("No tiene referencia a Planeta");
                 }
@@ -146,13 +141,10 @@ public class CorregimientoSupplier implements Serializable{
                  * 1- Obtener la lista documento 2- Obtener un List<SDocument>
                  * de las llaves primarias
                  */
-              
                 List<Provincia> provinciaList = provinciaSupplierServices.findAllByPK(document, provinciaReferenced);
-              
-              //provincia.setPais(paisList);
+
+                //provincia.setPais(paisList);
             }
-           
-           
 
         } catch (Exception e) {
             Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
@@ -162,8 +154,5 @@ public class CorregimientoSupplier implements Serializable{
 
     }
 // </editor-fold>
-
-   
-  
 
 }

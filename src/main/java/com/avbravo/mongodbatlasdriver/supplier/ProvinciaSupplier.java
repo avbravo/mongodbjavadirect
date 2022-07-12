@@ -9,7 +9,7 @@ import com.avbravo.jmoordb.core.util.DocumentUtil;
 import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Pais;
 import com.avbravo.mongodbatlasdriver.model.Provincia;
-import com.avbravo.mongodbatlasdriver.repository.PaisRepository;
+import com.avbravo.mongodbatlasdriver.supplier.services.PaisSupplierServices;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class ProvinciaSupplier implements Serializable{
 // </editor-fold>
    // <editor-fold defaultstate="collapsed" desc="@Inject">
     @Inject
-    PaisRepository paisRepository;
+    PaisSupplierServices paisSupplierServices;
    
 // </editor-fold>
 
@@ -132,7 +132,7 @@ public class ProvinciaSupplier implements Serializable{
              */
             Boolean istListReferecendToPais = false;
             if (!istListReferecendToPais) {
-                Optional<Pais> paisOptional = paisFindPK(document, paisReferenced);
+                Optional<Pais> paisOptional = paisSupplierServices.findByPK(document, paisReferenced);
                 if (paisOptional.isPresent()) {
                     provincia.setPais(paisOptional.get());
                 } else {
@@ -145,21 +145,9 @@ public class ProvinciaSupplier implements Serializable{
                  * 1- Obtener la lista documento 2- Obtener un List<SDocument>
                  * de las llaves primarias
                  */
-                List<Document> documentPaisList = (List<Document>) document.get(paisReferenced.from());
-                List<Pais> paisList = new ArrayList<>();
-                List<Document> documentPaisPkList = DocumentUtil.getListValue(document, paisReferenced);
-                if (documentPaisPkList == null || documentPaisPkList.isEmpty()) {
-                    Test.msg("No se pudo decomponer la lista de id referenced....");
-                } else {
-                    for (Document documentPk : documentPaisPkList) {
-                        Optional<Pais> paisOptional = paisFindPK(documentPk, paisReferenced);
-                        if (paisOptional.isPresent()) {
-                            paisList.add(paisOptional.get());
-                        } else {
-                            Test.warning("No tiene referencia a " + paisReferenced.from());
-                        }
-                    }
-                }
+              
+                List<Pais> paisList = paisSupplierServices.findAllByPK(document, paisReferenced);
+              
               //provincia.setPais(paisList);
             }
            

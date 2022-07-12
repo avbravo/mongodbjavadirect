@@ -12,8 +12,8 @@ import com.avbravo.mongodbatlasdriver.model.Musica;
 import com.avbravo.mongodbatlasdriver.model.Oceano;
 import com.avbravo.mongodbatlasdriver.model.Pais;
 import com.avbravo.mongodbatlasdriver.model.Planeta;
-import com.avbravo.mongodbatlasdriver.repository.OceanoRepository;
-import com.avbravo.mongodbatlasdriver.repository.PlanetaRepository;
+import com.avbravo.mongodbatlasdriver.supplier.services.OceanoSupplierServices;
+import com.avbravo.mongodbatlasdriver.supplier.services.PlanetaSupplierServices;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -46,9 +46,9 @@ public class PaisSupplier implements Serializable {
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="@Inject">
     @Inject
-    PlanetaRepository planetaRepository;
+    PlanetaSupplierServices planetaSupplierServices;
     @Inject
-    OceanoRepository oceanoRepository;
+    OceanoSupplierServices oceanoSupplierServices;
 // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Pais get(Supplier<? extends Pais> s, Document document)">
@@ -153,7 +153,7 @@ public class PaisSupplier implements Serializable {
              */
             Boolean istListReferecendToPlaneta = false;
             if (!istListReferecendToPlaneta) {
-                Optional<Planeta> planetaOptional = planetaFindPK(document, planetaReferenced);
+                Optional<Planeta> planetaOptional = planetaSupplierServices.findByPK(document, planetaReferenced);
                 if (planetaOptional.isPresent()) {
                     pais.setPlaneta(planetaOptional.get());
                 } else {
@@ -166,22 +166,9 @@ public class PaisSupplier implements Serializable {
                  * 1- Obtener la lista documento 2- Obtener un List<SDocument>
                  * de las llaves primarias
                  */
-                List<Document> documentPlanetaList = (List<Document>) document.get(planetaReferenced.from());
-                List<Planeta> planetaList = new ArrayList<>();
-                List<Document> documentPlanetaPkList = DocumentUtil.getListValue(document, planetaReferenced);
-                if (documentPlanetaPkList == null || documentPlanetaPkList.isEmpty()) {
-                    Test.msg("No se pudo decomponer la lista de id referenced....");
-                } else {
-                    for (Document documentPk : documentPlanetaPkList) {
-                        Optional<Planeta> planetaOptional = planetaFindPK(documentPk, planetaReferenced);
-                        if (planetaOptional.isPresent()) {
-                            planetaList.add(planetaOptional.get());
-                        } else {
-                            Test.warning("No tiene referencia a " + planetaReferenced.from());
-                        }
-                    }
-                }
-              //pais.setPlaneta(planetaList);
+                List<Planeta> planetaList = planetaSupplierServices.findAllByPK(document, planetaReferenced);
+
+                //pais.setPlaneta(planetaList);
             }
             /* --------------------------------------------------
              * @Referenced List<Oceano> oceano;
@@ -227,8 +214,8 @@ public class PaisSupplier implements Serializable {
 
             Boolean istListReferecendToOceano = true;
             if (!istListReferecendToOceano) {
-               Optional<Oceano> oceanoOptional = oceanoFindPK(document, oceanoReferenced);
-                
+                Optional<Oceano> oceanoOptional = oceanoSupplierServices.findByPK(document, oceanoReferenced);
+
                 if (oceanoOptional.isPresent()) {
                     //   pais.setOceano(oceanoOptional.get());
                 } else {
@@ -241,21 +228,7 @@ public class PaisSupplier implements Serializable {
                  * 1- Obtener la lista documento 2- Obtener un List<SDocument>
                  * de las llaves primarias
                  */
-                List<Document> documentOceanoList = (List<Document>) document.get(oceanoReferenced.from());
-                List<Oceano> oceanoList = new ArrayList<>();
-                List<Document> documentOceanoPkList = DocumentUtil.getListValue(document, oceanoReferenced);
-                if (documentOceanoPkList == null || documentOceanoPkList.isEmpty()) {
-                    Test.msg("No se pudo decomponer la lista de id referenced....");
-                } else {
-                    for (Document documentPk : documentOceanoPkList) {
-                        Optional<Oceano> oceanoOptional = oceanoFindPK(documentPk, oceanoReferenced);
-                        if (oceanoOptional.isPresent()) {
-                            oceanoList.add(oceanoOptional.get());
-                        } else {
-                            Test.warning("No tiene referencia a " + oceanoReferenced.from());
-                        }
-                    }
-                }
+                List<Oceano> oceanoList = oceanoSupplierServices.findAllByPK(document, oceanoReferenced);;
 
                 /**
                  * Si fuera referenciado se elimina el comentario
