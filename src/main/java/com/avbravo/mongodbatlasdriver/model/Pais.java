@@ -8,6 +8,7 @@ import com.avbravo.jmoordb.core.annotation.Embedded;
 import com.avbravo.jmoordb.core.annotation.Entity;
 import com.avbravo.jmoordb.core.annotation.Id;
 import com.avbravo.jmoordb.core.annotation.Referenced;
+import com.avbravo.jmoordb.core.annotation.enumerations.TypePK;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public class Pais {
     
     @Embedded
     private List<Musica> musica;
-    @Referenced(from = "planeta",localField = "planeta.idplaneta",foreignField = "idplaneta",as ="planeta", typeFieldkeyString = true)
+    @Referenced(from = "planeta",localField = "planeta.idplaneta",foreignField = "idplaneta",as ="planeta", typePK = TypePK.STRING)
     private Planeta planeta;
     @Referenced(from = "oceano",localField = "oceano.idoceano",foreignField = "idoceano",as ="oceano")
     private List<Oceano> oceano;

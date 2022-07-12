@@ -5,6 +5,7 @@
 package com.avbravo.mongodbatlasdriver.repository.implementations;
 
 import com.avbravo.jmoordb.core.annotation.Referenced;
+import com.avbravo.jmoordb.core.annotation.enumerations.TypePK;
 import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.jmoordb.core.lookup.enumerations.LookupSupplierLevel;
 import com.avbravo.jmoordb.core.util.DocumentUtil;
@@ -118,32 +119,5 @@ Test.error(Test.nameOfClassAndMethod() + " "+e.getLocalizedMessage());
 
     
     
-    // <editor-fold defaultstate="collapsed" desc="Optional<Oceano> oceanoFindPK(Document document, Referenced planetaReferenced)">
-
-    /**
-     *
-     * @param document
-     * @param planetaReferenced
-     * @return Devuelve un Optional del resultado de la busqueda por la llave
-     * primaria Dependiendo si es entero o String
-     */
-    public Optional<Oceano> findPK(Document document, Referenced oceanoReferenced) {
-        try {
-            Optional<Oceano> oceanoOptional = Optional.empty();
-            if (oceanoReferenced.typeFieldkeyString()) {
-                oceanoOptional = findById(DocumentUtil.getIdValue(document, oceanoReferenced));
-            } else {
-                //     oceanoOptional = oceanoRepository.findById(Integer.parseInt(DocumentUtil.getIdValue(document, oceanoReferenced)));
-            }
-
-            if (oceanoOptional.isPresent()) {
-                return oceanoOptional;
-            }
-
-        } catch (Exception e) {
-            Test.error(Test.nameOfClassAndMethod() + " error() " + e.getLocalizedMessage());
-        }
-        return Optional.empty();
-    }
-// </editor-fold>
+  
 }

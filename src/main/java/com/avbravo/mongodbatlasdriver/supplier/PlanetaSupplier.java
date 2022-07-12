@@ -4,8 +4,6 @@
  */
 package com.avbravo.mongodbatlasdriver.supplier;
 
-import com.avbravo.jmoordb.core.lookup.enumerations.LookupSupplierLevel;
-import com.avbravo.jmoordb.core.util.ConsoleUtil;
 import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Planeta;
 import java.io.Serializable;

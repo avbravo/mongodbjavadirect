@@ -5,6 +5,7 @@
 package com.avbravo.jmoordb.core.util;
 
 import com.avbravo.jmoordb.core.annotation.Referenced;
+import com.avbravo.jmoordb.core.annotation.enumerations.TypePK;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -85,7 +86,7 @@ public class DocumentUtil {
             StringTokenizer st = new StringTokenizer(data, ",");
             while (st.hasMoreTokens()) {
                 Document doc = new Document();
-                if (referenced.typeFieldkeyString()) {
+                if (referenced.typePK().equals(TypePK.STRING)) {
                     doc.append(referenced.foreignField(), st.nextToken().trim());
                 } else {
                     Integer value = Integer.parseInt(st.nextToken().trim());

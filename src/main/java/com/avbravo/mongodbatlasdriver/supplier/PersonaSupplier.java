@@ -5,6 +5,7 @@
 package com.avbravo.mongodbatlasdriver.supplier;
 
 import com.avbravo.jmoordb.core.annotation.Referenced;
+import com.avbravo.jmoordb.core.annotation.enumerations.TypePK;
 import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Persona;
 import com.avbravo.mongodbatlasdriver.model.Corregimiento;
@@ -95,9 +96,9 @@ public class PersonaSupplier implements Serializable{
                     throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
                 }
 
-                @Override
-                public boolean typeFieldkeyString() {
-                    return true;
+                 @Override
+                public TypePK typePK() {
+                    return TypePK.STRING;
                 }
             };
 
@@ -156,8 +157,8 @@ public class PersonaSupplier implements Serializable{
                 }
 
                 @Override
-                public boolean typeFieldkeyString() {
-                    return true;
+                public TypePK typePK() {
+                    return TypePK.STRING;
                 }
             };
 

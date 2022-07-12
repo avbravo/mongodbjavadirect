@@ -5,15 +5,13 @@
 package com.avbravo.mongodbatlasdriver.supplier;
 
 import com.avbravo.jmoordb.core.annotation.Referenced;
-import com.avbravo.jmoordb.core.util.DocumentUtil;
+import com.avbravo.jmoordb.core.annotation.enumerations.TypePK;
 import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Corregimiento;
 import com.avbravo.mongodbatlasdriver.model.Provincia;
-import com.avbravo.mongodbatlasdriver.repository.ProvinciaRepository;
 import com.avbravo.mongodbatlasdriver.supplier.services.ProvinciaSupplierServices;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -116,9 +114,11 @@ public class CorregimientoSupplier implements Serializable {
                 }
 
                 @Override
-                public boolean typeFieldkeyString() {
-                    return true;
+                public TypePK typePK() {
+                    return TypePK.STRING;
                 }
+
+               
             };
 
             /**

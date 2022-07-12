@@ -5,6 +5,7 @@
 package com.avbravo.mongodbatlasdriver.supplier.services;
 
 import com.avbravo.jmoordb.core.annotation.Referenced;
+import com.avbravo.jmoordb.core.annotation.enumerations.TypePK;
 import com.avbravo.jmoordb.core.util.DocumentUtil;
 import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Persona;
@@ -40,7 +41,7 @@ public class PersonaSupplierServices implements Serializable {
     public Optional<Persona> findByPK(Document document,Referenced referenced) {
         try {
             Optional<Persona> optional = Optional.empty();
-            if (referenced.typeFieldkeyString()) {
+          if (referenced.typePK().equals(TypePK.STRING)) {
                 optional = repository.findById(DocumentUtil.getIdValue(document, referenced));
             } else {
                 //    personaOptional  = personaRepository.findById(Integer.parseInt(DocumentUtil.getIdValue(document, referenced)));
