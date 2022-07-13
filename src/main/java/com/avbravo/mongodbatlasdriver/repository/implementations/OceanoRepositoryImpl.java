@@ -4,11 +4,7 @@
  */
 package com.avbravo.mongodbatlasdriver.repository.implementations;
 
-import com.avbravo.jmoordb.core.annotation.Referenced;
-import com.avbravo.jmoordb.core.annotation.enumerations.TypePK;
 import com.avbravo.jmoordb.core.util.Test;
-import com.avbravo.jmoordb.core.lookup.enumerations.LookupSupplierLevel;
-import com.avbravo.jmoordb.core.util.DocumentUtil;
 import com.avbravo.mongodbatlasdriver.model.Oceano;
 import com.avbravo.mongodbatlasdriver.repository.OceanoRepository;
 import com.avbravo.mongodbatlasdriver.supplier.OceanoSupplier;
@@ -22,6 +18,8 @@ import java.util.List;
 import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 import org.bson.Document;
 import org.eclipse.microprofile.config.Config;
 
@@ -91,7 +89,7 @@ Test.error(Test.nameOfClassAndMethod() + " "+e.getLocalizedMessage());
             MongoDatabase database = mongoClient.getDatabase("world");
             MongoCollection<Document> collection = database.getCollection("oceano");
             Document doc = collection.find(eq("idoceano", id)).first();
-           
+            
             Oceano oceano = oceanoSupplier.get(Oceano::new,doc);
 
             return Optional.of(oceano);
@@ -103,8 +101,30 @@ Test.error(Test.nameOfClassAndMethod() + " "+e.getLocalizedMessage());
     }
 
     @Override
-    public Oceano save(Oceano oceano) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public Boolean save(Oceano oceano) {
+      try {
+            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoCollection<Document> collection = database.getCollection("oceano");
+            Document doc = collection.find(eq("idoceano", oceano.getOceano())).first();
+            if(doc == null){
+                
+            }else{
+                
+            }
+            
+              Jsonb jsonb = JsonbBuilder.create();
+           
+          collection.insertOne( Document.parse(jsonb.toJson(oceano)));
+           return Boolean.TRUE;
+           
+
+ 
+        } catch (Exception e) {
+          Test.error(Test.nameOfClassAndMethod() + " "+e.getLocalizedMessage());
+        }
+
+        return Boolean.FALSE;
+
     }
 
     @Override
