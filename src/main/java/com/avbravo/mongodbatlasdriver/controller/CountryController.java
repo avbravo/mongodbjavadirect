@@ -109,7 +109,7 @@ public class CountryController {
     @Tag(name = "BETA", description = "This API is currently in beta state")
     public Response delete(
        @Parameter(description = "The item ID", required = true, example = "1", schema = @Schema(type = SchemaType.STRING)) @PathParam("id") String id) {
-      countryRepository.deleteById(id);
+      countryRepository.delete(id);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 }

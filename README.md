@@ -54,6 +54,14 @@ curl --location --request POST 'http://localhost:8080/products/' \
 
 
 
+curl -X PUT -H "Content-Type: application/json" -d '{"greeting" : "Hola"}' http://localhost:8080/greet/greeting
+
+
+curl --location --request POST 'http://localhost:8080/api/oceano/' \
+--header 'Content-Type: application/json' \
+--data-raw '{"idoceano": "jr", "oceano": "Prueba"}'
+
+
 ```
 
 ## Metrics

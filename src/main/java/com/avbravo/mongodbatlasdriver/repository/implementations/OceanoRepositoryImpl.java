@@ -12,7 +12,10 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import static com.mongodb.client.model.Filters.eq;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +24,7 @@ import javax.inject.Inject;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.eclipse.microprofile.config.Config;
 
 /**
@@ -31,9 +35,7 @@ import org.eclipse.microprofile.config.Config;
 //@Stateless
 public class OceanoRepositoryImpl implements OceanoRepository {
 
-    
     // <editor-fold defaultstate="collapsed" desc="@Inject">
-
     @Inject
     private Config config;
 
@@ -44,9 +46,8 @@ public class OceanoRepositoryImpl implements OceanoRepository {
     @Inject
     OceanoSupplier oceanoSupplier;
 // </editor-fold>
-    
-    // <editor-fold defaultstate="collapsed" desc="List<Oceano> findAll()">
 
+    // <editor-fold defaultstate="collapsed" desc="List<Oceano> findAll()">
     @Override
     public List<Oceano> findAll() {
 
@@ -54,34 +55,33 @@ public class OceanoRepositoryImpl implements OceanoRepository {
         try {
 
             MongoDatabase database = mongoClient.getDatabase("world");
-     
+
             MongoCollection<Document> collection = database.getCollection("oceano");
 
-               /**
-             * Es una entidad de nivel 0
-             * LookupSupplier.ZERO no usa lookup
-             * 
+            /**
+             * Es una entidad de nivel 0 LookupSupplier.ZERO no usa lookup
+             *
              */
-            
             MongoCursor<Document> cursor = collection.find().iterator();
-            
-          
+
             try {
                 while (cursor.hasNext()) {
-               
-                    list.add(oceanoSupplier.get(Oceano::new,cursor.next()));
+
+                    list.add(oceanoSupplier.get(Oceano::new, cursor.next()));
                 }
             } finally {
                 cursor.close();
             }
 
         } catch (Exception e) {
-Test.error(Test.nameOfClassAndMethod() + " "+e.getLocalizedMessage());
+            Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
         }
 
         return list;
     }
 // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Optional<Oceano> findById(String id) ">
     @Override
     public Optional<Oceano> findById(String id) {
 
@@ -89,47 +89,97 @@ Test.error(Test.nameOfClassAndMethod() + " "+e.getLocalizedMessage());
             MongoDatabase database = mongoClient.getDatabase("world");
             MongoCollection<Document> collection = database.getCollection("oceano");
             Document doc = collection.find(eq("idoceano", id)).first();
-            
-            Oceano oceano = oceanoSupplier.get(Oceano::new,doc);
+
+            Oceano oceano = oceanoSupplier.get(Oceano::new, doc);
 
             return Optional.of(oceano);
         } catch (Exception e) {
-          Test.error(Test.nameOfClassAndMethod() + " "+e.getLocalizedMessage());
+            Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
         }
 
         return Optional.empty();
     }
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Optional<Oceano> save(Oceano oceano)">
 
     @Override
-    public Boolean save(Oceano oceano) {
-      try {
+    public Optional<Oceano> save(Oceano oceano) {
+        try {
             MongoDatabase database = mongoClient.getDatabase("world");
             MongoCollection<Document> collection = database.getCollection("oceano");
-            Document doc = collection.find(eq("idoceano", oceano.getOceano())).first();
-            if(doc == null){
-                
-            }else{
-                
-            }
-            
-              Jsonb jsonb = JsonbBuilder.create();
-           
-          collection.insertOne( Document.parse(jsonb.toJson(oceano)));
-           return Boolean.TRUE;
-           
 
- 
+            if (findById(oceano.getIdoceano()).isPresent()) {
+                Test.warning("Eciste un registro con ese id");
+                return Optional.empty();
+            }
+
+            Jsonb jsonb = JsonbBuilder.create();
+
+            collection.insertOne(Document.parse(jsonb.toJson(oceano)));
+            return Optional.of(oceano);
+
         } catch (Exception e) {
-          Test.error(Test.nameOfClassAndMethod() + " "+e.getLocalizedMessage());
+            Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
+        }
+
+        return Optional.empty();
+
+    }
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Boolean update(Oceano oceano)">
+
+    @Override
+    public Boolean update(Oceano oceano) {
+        try {
+            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoCollection<Document> collection = database.getCollection("oceano");
+
+            if (!findById(oceano.getIdoceano()).isPresent()) {
+                Test.warning("Eciste un registro con ese id");
+                return Boolean.FALSE;
+            }
+            Bson filter = Filters.empty();
+            filter = Filters.eq("idoceano", oceano.getIdoceano());
+
+            Jsonb jsonb = JsonbBuilder.create();
+
+            UpdateResult result = collection.updateOne(filter, Document.parse(jsonb.toJson(oceano)));
+            System.out.println("Matched document count: " + result.getMatchedCount());
+            System.out.println("Modified document count: " + result.getModifiedCount());
+            if (result.getModifiedCount() > 0) {
+                return Boolean.TRUE;
+            }
+
+        } catch (Exception e) {
+            Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
         }
 
         return Boolean.FALSE;
 
     }
+    // </editor-fold>  
 
     @Override
-    public void deleteById(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public Boolean delete(String id) {
+         try {
+            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoCollection<Document> collection = database.getCollection("oceano");
+Bson filter = Filters.eq("idoceano", id);
+DeleteResult deleteResult =collection.deleteOne(filter);
+            
+
+          
+            
+            System.out.println("Modified document count: " + deleteResult.getDeletedCount());
+            if (deleteResult.getDeletedCount() > 0) {
+                return Boolean.TRUE;
+            }
+
+        } catch (Exception e) {
+            Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
+        }
+
+        return Boolean.FALSE;
     }
 
     @Override
@@ -137,7 +187,4 @@ Test.error(Test.nameOfClassAndMethod() + " "+e.getLocalizedMessage());
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    
-    
-  
 }

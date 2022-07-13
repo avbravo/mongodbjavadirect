@@ -22,6 +22,7 @@ public interface OceanoRepository{
     public Optional<Oceano> findById(String id);    
     @Query(value="select * from oceano where oceano = :oceano")
     public List<Oceano> findByOceano(String oceano);
-    public Boolean save(Oceano oceano);
-    public void deleteById(String id);
+    public Optional<Oceano> save(Oceano oceano);
+    public Boolean update(Oceano oceano);
+    public Boolean delete(String id);
 }
