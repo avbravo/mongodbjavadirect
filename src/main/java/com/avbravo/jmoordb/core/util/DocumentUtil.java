@@ -102,5 +102,16 @@ public class DocumentUtil {
         return result;
     }
     // </editor-fold>
+    
+        // <editor-fold defaultstate="collapsed" desc="Document jsonToDocument(String json)">
+    /**
+     * Convierte un Json a Document
+     * @param json
+     * @return 
+     */
+    public Document jsonToDocument(String json){
+        return Document.parse(json.toString());
+    }
+    // </editor-fold>
 
 }

@@ -8,6 +8,7 @@ import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Oceano;
 import com.avbravo.mongodbatlasdriver.repository.OceanoRepository;
 import com.avbravo.mongodbatlasdriver.supplier.OceanoSupplier;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -15,6 +16,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,8 +117,10 @@ public class OceanoRepositoryImpl implements OceanoRepository {
 
             Jsonb jsonb = JsonbBuilder.create();
 
-            collection.insertOne(Document.parse(jsonb.toJson(oceano)));
-            return Optional.of(oceano);
+            InsertOneResult insertOneResult = collection.insertOne(Document.parse(jsonb.toJson(oceano)));
+            if (insertOneResult.getInsertedId() != null) {
+                return Optional.of(oceano);
+            }
 
         } catch (Exception e) {
             Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
@@ -126,7 +130,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
 
     }
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="Boolean update(Oceano oceano)">
+    // <editor-fold defaultstate="collapsed" desc="Boolean update(Oceano oceano) ">
 
     @Override
     public Boolean update(Oceano oceano) {
@@ -159,17 +163,15 @@ public class OceanoRepositoryImpl implements OceanoRepository {
     }
     // </editor-fold>  
 
+    // <editor-fold defaultstate="collapsed" desc="Boolean delete(String id) "> 
     @Override
     public Boolean delete(String id) {
-         try {
+        try {
             MongoDatabase database = mongoClient.getDatabase("world");
             MongoCollection<Document> collection = database.getCollection("oceano");
-Bson filter = Filters.eq("idoceano", id);
-DeleteResult deleteResult =collection.deleteOne(filter);
-            
+            Bson filter = Filters.eq("idoceano", id);
+            DeleteResult deleteResult = collection.deleteOne(filter);
 
-          
-            
             System.out.println("Modified document count: " + deleteResult.getDeletedCount());
             if (deleteResult.getDeletedCount() > 0) {
                 return Boolean.TRUE;
@@ -181,10 +183,66 @@ DeleteResult deleteResult =collection.deleteOne(filter);
 
         return Boolean.FALSE;
     }
+    // </editor-fold> 
+
+    // <editor-fold defaultstate="collapsed" desc="List<Oceano> findByOceano(String contry)">
+    @Override
+    public List<Oceano> findByOceano(String oceano) {
+        List<Oceano> list = new ArrayList<>();
+        try {
+            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoCollection<Document> collection = database.getCollection("oceano");
+
+            MongoCursor<Document> cursor = collection.find(eq("oceano", oceano)).iterator();
+
+            try {
+                while (cursor.hasNext()) {
+
+                    list.add(oceanoSupplier.get(Oceano::new, cursor.next()));
+                }
+            } finally {
+                cursor.close();
+            }
+        } catch (Exception e) {
+            Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
+        }
+
+        return list;
+    }
+    // </editor-fold>
 
     @Override
-    public List<Oceano> findByOceano(String contry) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    public List<Oceano> jsonQuery(Document filter, Integer pageNumber, Integer rowsForPage, Document... docSort) {
+        List<Oceano> list = new ArrayList<>();
+        Document sortQuery = new Document();
+        try {
+            if (docSort.length != 0) {
+                sortQuery = docSort[0];
 
+            }
+
+            MongoDatabase database = mongoClient.getDatabase("world");
+
+            MongoCollection<Document> collection = database.getCollection("oceano");
+
+            MongoCursor<Document> cursor = collection.find(filter)
+                    .skip(pageNumber > 0 ? ((pageNumber - 1) * rowsForPage) : 0)
+                    .limit(rowsForPage)
+                    .sort(sortQuery).iterator();
+
+            try {
+                while (cursor.hasNext()) {
+
+                    list.add(oceanoSupplier.get(Oceano::new, cursor.next()));
+                }
+            } finally {
+                cursor.close();
+            }
+
+        } catch (Exception e) {
+            Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
+        }
+
+        return list;
+    }
 }

@@ -7,7 +7,6 @@ package com.avbravo.mongodbatlasdriver.controller;
 import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Country;
 import com.avbravo.mongodbatlasdriver.repository.CountryRepository;
-import com.avbravo.mongodbatlasdriver.repository.implementations.CountryRepositoryImpl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -109,7 +108,7 @@ public class CountryController {
     @Tag(name = "BETA", description = "This API is currently in beta state")
     public Response delete(
        @Parameter(description = "The item ID", required = true, example = "1", schema = @Schema(type = SchemaType.STRING)) @PathParam("id") String id) {
-      countryRepository.delete(id);
+      countryRepository.deleteById(id);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 }
