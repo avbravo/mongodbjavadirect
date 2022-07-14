@@ -16,11 +16,11 @@ import java.util.Optional;
  */
 @Repository(entity = Corregimiento.class, jakarta = false)
 public interface CorregimientoRepository {
-    @Query("select * from corregimiento")
+    @Query()
     public List<Corregimiento> findAll();
-    @Query("select * from corregimiento where idoais = :id")
+    @Query(where="idoais = :id")
     public Optional<Corregimiento> findById(String id);
-    @Query("select * from corregimiento where corregimiento = :corregimiento")
+    @Query(where="corregimiento = :corregimiento")
     public List<Corregimiento> findByCorregimiento(String corregimiento);
     public Corregimiento save(Corregimiento corregimiento);
     public void deleteById(String id);

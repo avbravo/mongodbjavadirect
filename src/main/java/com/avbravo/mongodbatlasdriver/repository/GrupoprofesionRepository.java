@@ -16,11 +16,11 @@ import java.util.Optional;
  */
 @Repository(entity = Grupoprofesion.class,jakarta = false)
 public interface GrupoprofesionRepository {            
-    @Query(value="select * from grupoprofesion")
+    @Query()
     public List<Grupoprofesion> findAll();    
-    @Query(value="select * from grupoprofesion where idgrupoprofesion = :id")
+    @Query(where="idgrupoprofesion = :id")
     public Optional<Grupoprofesion> findById(String id);    
-    @Query(value="select * from grupoprofesion where grupoprofesion = :grupoprofesion")
+    @Query(where="grupoprofesion = :grupoprofesion")
     public List<Grupoprofesion> findByGrupoprofesion(String grupoprofesion);
     public Grupoprofesion save(Grupoprofesion grupoprofesion);
     public void deleteById(String id);

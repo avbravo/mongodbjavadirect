@@ -4,11 +4,16 @@
  */
 package com.avbravo.mongodbatlasdriver.repository.implementations;
 
+import com.avbravo.jmoordb.core.annotation.enumerations.ActivatePagination;
+import com.avbravo.jmoordb.core.annotation.enumerations.ActivateSort;
+import com.avbravo.jmoordb.core.annotation.enumerations.CaseSensitive;
+import com.avbravo.jmoordb.core.annotation.enumerations.TypeOrder;
+import com.avbravo.jmoordb.core.pagination.Pagination;
+import com.avbravo.jmoordb.core.util.DocumentUtil;
 import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Oceano;
 import com.avbravo.mongodbatlasdriver.repository.OceanoRepository;
 import com.avbravo.mongodbatlasdriver.supplier.OceanoSupplier;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -21,6 +26,7 @@ import com.mongodb.client.result.UpdateResult;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.bind.Jsonb;
@@ -210,25 +216,175 @@ public class OceanoRepositoryImpl implements OceanoRepository {
         return list;
     }
     // </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="List<Oceano> jsonQuery(Document filter, Pagination pagination, Document... sort)">
 
+    /**
+     *
+     * @param filter
+     * @param pagination
+     * @param sort
+     * @return Si pagination == null || pagination < 0 indica que no se usara
+     * paginacion
+     */
     @Override
-    public List<Oceano> jsonQuery(Document filter, Integer pageNumber, Integer rowsForPage, Document... docSort) {
+    public List<Oceano> queryJSON(Document filter, Pagination pagination, Document... sort) {
         List<Oceano> list = new ArrayList<>();
         Document sortQuery = new Document();
         try {
-            if (docSort.length != 0) {
-                sortQuery = docSort[0];
+            /**
+             * Leer la anotacion @QueryJSON
+             */
 
+            ActivatePagination activatePagination = ActivatePagination.ON;
+            ActivateSort activateSort = ActivateSort.ON;
+
+            /**
+             * DataBase
+             */
+            if (activateSort == ActivateSort.ON) {
+                if (sort.length != 0) {
+                    sortQuery = sort[0];
+                }
+            }
+            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoCollection<Document> collection = database.getCollection("oceano");
+            MongoCursor<Document> cursor;
+            if (activatePagination == ActivatePagination.ON) {
+                if (pagination == null || pagination.getPage() < 1) {
+                    cursor = collection.find(filter).sort(sortQuery).iterator();
+                } else {
+                    cursor = collection.find(filter)
+                            .skip(pagination.skip())
+                            .limit(pagination.limit())
+                            .sort(sortQuery).iterator();
+                }
+
+            } else {
+
+                    cursor = collection.find(filter)
+                            .sort(sortQuery).iterator();
             }
 
-            MongoDatabase database = mongoClient.getDatabase("world");
+            try {
+                while (cursor.hasNext()) {
+                    list.add(oceanoSupplier.get(Oceano::new, cursor.next()));
+                }
+            } finally {
+                cursor.close();
+            }
 
+        } catch (Exception e) {
+            Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
+        }
+
+        return list;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Integer count(Document... query">
+    @Override
+    public Integer count(Document... query) {
+        Integer contador = 0;
+        try {
+            Document whereCondition =new Document();
+            if (query.length != 0) {
+                whereCondition = query[0];
+            }
+            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoCollection<Document> collection = database.getCollection("oceano");
+            if (whereCondition.isEmpty()) {
+                contador = (int) collection.countDocuments();
+            } else {
+              //  Document docQuery = DocumentUtil.jsonToDocument(whereCondition);
+                contador = (int) collection.countDocuments(whereCondition);
+            }
+
+        } catch (Exception e) {
+            Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
+        }
+        return contador;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="List<Oceano> findRegex(String query)>
+    /**
+     *
+     * @param query
+     * @return
+     */
+    @Override
+    public List<Oceano> findRegex(String value, Pagination pagination) {
+        List<Oceano> list = new ArrayList<>();
+        try {
+            /**
+             * Leer la anotacion @QueryRegex field
+             */
+            String field = "oceano";
+            ActivatePagination activatePagination = ActivatePagination.ON;
+            CaseSensitive caseSensitive = CaseSensitive.NO;
+            TypeOrder typeOrder = TypeOrder.ASC;
+            /**
+             * DataBase
+             */
+            MongoDatabase database = mongoClient.getDatabase("world");
             MongoCollection<Document> collection = database.getCollection("oceano");
 
-            MongoCursor<Document> cursor = collection.find(filter)
-                    .skip(pageNumber > 0 ? ((pageNumber - 1) * rowsForPage) : 0)
-                    .limit(rowsForPage)
-                    .sort(sortQuery).iterator();
+            /**
+             * Generar el patron
+             */
+            Pattern regex = Pattern.compile(value);
+            /**
+             * Generar ordenación 1. Se usa el atriiuto field de la anotacion
+             *
+             * @QueruRegex
+             */
+            // Genera ordenacion
+            Integer order = 1;
+            if (typeOrder == TypeOrder.DESC) {
+                order = -1;
+            }
+            Document sort = new Document(field, order);
+            /**
+             * Se toma de la anotacion @QueryRegex campo caseSensitive con su
+             * valor
+             */
+
+            MongoCursor<Document> cursor;
+
+            /**
+             * Verificar si usara pagainación o no. Verificar si s usara
+             * caseSemsitive
+             */
+            if (activatePagination == ActivatePagination.OFF) {
+                if (caseSensitive == CaseSensitive.NO) {
+                    cursor = collection.find(new Document(field, new Document("$regex", "^" + value)))
+                            .sort(sort)
+                            .iterator();
+
+                } else {
+                    cursor = collection.find(new Document(field, new Document("$regex", "^" + value)
+                            .append("$options", "i")))
+                            .sort(sort)
+                            .iterator();
+
+                }
+            } else {
+                if (caseSensitive == CaseSensitive.NO) {
+                    cursor = collection
+                            .find(new Document(field, new Document("$regex", "^" + value)))
+                            .skip(pagination.skip())
+                            .limit(pagination.limit())
+                            .sort(sort).iterator();
+
+                } else {
+                    cursor = collection
+                            .find(new Document(field, new Document("$regex", "^" + value).append("$options", "i")))
+                            .skip(pagination.skip())
+                            .limit(pagination.limit())
+                            .sort(sort).iterator();
+
+                }
+            }
 
             try {
                 while (cursor.hasNext()) {
@@ -245,4 +401,116 @@ public class OceanoRepositoryImpl implements OceanoRepository {
 
         return list;
     }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Integer countRegex(String value)">
+    /**
+     *
+     * @param value
+     * @return total de documentos que cumolen con la condicion Regex
+     */
+    @Override
+    public Integer countRegex(String value) {
+        Integer contador = 0;
+        try {
+            /**
+             * Leer la anotacion @CountRegex
+             */
+            String field = "oceano";
+            CaseSensitive caseSensitive = CaseSensitive.NO;
+
+            /**
+             * Leer la base de datos
+             */
+            MongoDatabase database = mongoClient.getDatabase("world");
+
+            MongoCollection<Document> collection = database.getCollection("oceano");
+
+            /**
+             * Generar el patron
+             */
+            Pattern regex = Pattern.compile(value);
+
+            MongoCursor<Document> cursor;
+
+            /**
+             * Verificar si usara pagainación o no. Verificar si s usara
+             * caseSemsitive
+             */
+            if (caseSensitive == CaseSensitive.NO) {
+                contador = (int) collection.countDocuments(new Document("oceano", new Document("$regex", "^" + value)));
+
+            } else {
+                contador = (int) collection.countDocuments(new Document("oceano", new Document("$regex", "^" + value).append("$options", "i")));
+
+            }
+
+        } catch (Exception e) {
+            Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
+        }
+
+        return contador;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="List<Oceano> findByOceanoPagination(String oceano, Pagination pagination) ">
+    /**
+     *
+     * @param oceano
+     * @param pagination
+     * @return List<Entity> de la consulta aplicando paginación
+     */
+    @Override
+    public List<Oceano> findByOceanoPagination(String oceano, Pagination pagination, Document sort) {
+        List<Oceano> list = new ArrayList<>();
+        try {
+            /**
+             * Leer la anotacion @QueryRegex field
+             */
+            String field = "oceano";
+            ActivatePagination activatePagination = ActivatePagination.ON;
+            CaseSensitive caseSensitive = CaseSensitive.NO;
+            TypeOrder typeOrder = TypeOrder.ASC;
+
+            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoCollection<Document> collection = database.getCollection("oceano");
+
+            /**
+             * Lee de la anotación @Query la propiedad activatePagination =
+             * ActivatePagination.ON o ActivatePagination.OFF
+             */
+            MongoCursor<Document> cursor;
+            if (activatePagination == ActivatePagination.ON) {
+                if (pagination == null || pagination.getPage() < 0) {
+                    Test.msg("Paginación no es valida");
+                    return new ArrayList<>();
+                } else {
+                    cursor = collection.find(eq("oceano", oceano))
+                            .skip(pagination.skip())
+                            .limit(pagination.limit())
+                            .sort(sort)
+                            .iterator();
+                }
+
+            } else {
+                cursor = collection.find(eq("oceano", oceano))
+                        .sort(sort)
+                        .iterator();
+            }
+
+            try {
+                while (cursor.hasNext()) {
+
+                    list.add(oceanoSupplier.get(Oceano::new, cursor.next()));
+                }
+            } finally {
+                cursor.close();
+            }
+        } catch (Exception e) {
+            Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
+        }
+
+        return list;
+    }
+    // </editor-fold>
 }

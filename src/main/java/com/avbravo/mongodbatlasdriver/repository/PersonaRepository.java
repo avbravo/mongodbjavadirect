@@ -16,11 +16,11 @@ import java.util.Optional;
  */
 @Repository(entity = Persona.class, jakarta = false)
 public interface PersonaRepository {
-    @Query("select * from persona")
+    @Query()
     public List<Persona> findAll();
-    @Query("select * from persona where idoais = :id")
+    @Query(where= "idoais = :id")
     public Optional<Persona> findById(String id);
-    @Query("select * from persona where persona = :persona")
+    @Query(where ="persona = :persona")
     public List<Persona> findByPersona(String persona);
     public Persona save(Persona persona);
     public void deleteById(String id);

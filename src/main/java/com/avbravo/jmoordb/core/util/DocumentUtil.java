@@ -109,7 +109,7 @@ public class DocumentUtil {
      * @param json
      * @return 
      */
-    public Document jsonToDocument(String json){
+    public static Document jsonToDocument(String json){
         return Document.parse(json.toString());
     }
     // </editor-fold>
