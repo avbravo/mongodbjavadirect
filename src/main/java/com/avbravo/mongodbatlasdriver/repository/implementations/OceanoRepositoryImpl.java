@@ -560,7 +560,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
     }
 // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="metodo">
+    // <editor-fold defaultstate="collapsed" desc="Boolean ping()">
     @Override
     public Boolean ping() {
         Boolean conected = Boolean.FALSE;

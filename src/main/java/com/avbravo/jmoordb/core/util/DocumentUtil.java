@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -265,8 +267,36 @@ public class DocumentUtil {
         return filter;
     }
     // </editor-fold>
+    
+    
+     // <editor-fold defaultstate="collapsed" desc="Bson createBsonBetweenDateUsingHours(String fieldnamestart, Date datestartvalue, String fieldlimitname, Date datelimitvalue)">
+    /**
+     * crea un filtro Bson entre fechas sin tomar en cuenta la hora
+     * @param fieldnamestart
+     * @param datestartvalue
+     * @param fieldlimitname
+     * @param datelimitvalue
+     * @return 
+     */
+    public static Bson createBsonBetweenDateUsingHours(String fieldnamestart, Date datestartvalue, String fieldlimitname, Date datelimitvalue) {
+   Bson filter = new Document();
+        try {
+      
+              Date dateStart = setHourToDate(datestartvalue, 0, 0);
+            Date dateEnd = setHourToDate(datelimitvalue, 23, 59);
+            filter = Filters.and(Filters.gte(fieldnamestart, datestartvalue), Filters.lte(fieldlimitname,  datelimitvalue));
+            
 
-    // <editor-fold defaultstate="collapsed" desc="String encodeJson(String query) >
+return filter;
+        } catch (Exception e) {
+          Test.error(Test.nameOfClassAndMethod() + "error: " + e.getLocalizedMessage());
+        }
+
+        return filter;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="String encodeJson(String query)" >
 
     public static String encodeJson(String query) {
         try {
