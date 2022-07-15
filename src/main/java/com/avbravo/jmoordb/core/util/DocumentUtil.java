@@ -15,9 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 import org.bson.BsonDocument;
-import static org.bson.BsonDocumentWrapper.asBsonDocument;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.glassfish.jersey.uri.UriComponent;
 
 /**
  *
@@ -120,6 +120,7 @@ public class DocumentUtil {
     public static Document jsonToDocument(String json) {
         return Document.parse(json.toString());
     }
+
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="String bsonToJson(Bson filter)">
     public static String bsonToJson(Bson filter) {
@@ -265,4 +266,17 @@ public class DocumentUtil {
     }
     // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="String encodeJson(String query) >
+
+    public static String encodeJson(String query) {
+        try {
+
+            return UriComponent.encode(query, UriComponent.Type.QUERY_PARAM_SPACE_ENCODED);
+        } catch (Exception e) {
+            Test.error(Test.nameOfClassAndMethod() + "error: " + e.getLocalizedMessage());
+        }
+        return query;
+
+    }
+    // </editor-fold>
 }
