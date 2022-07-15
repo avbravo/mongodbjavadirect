@@ -75,7 +75,7 @@ public class OceanoController {
         return oceanoRepository.findAll();
     }
     
-     @GET
+    @GET
     @Path("{id}")
     @Operation(summary = "Find a oceano by id", description = "Find a oceano by id")
     @APIResponse(responseCode = "200", description = "The oceano")
@@ -87,6 +87,19 @@ public class OceanoController {
             @Parameter(description = "The item ID", required = true, example = "1", schema = @Schema(type = SchemaType.STRING)) @PathParam("id") String id) {
         return oceanoRepository.findById(id).orElseThrow(
                 () -> new WebApplicationException("There is no oceano with the id " + id, Response.Status.NOT_FOUND));
+    }
+    
+    @GET
+    @Path("/ping")
+    @Operation(summary = "Ping a la base de datos", description = "Hace un ping a la base de datos")
+    @APIResponse(responseCode = "200", description = "The oceano")
+    @APIResponse(responseCode = "404", description = "When the id does not exist")
+    @APIResponse(responseCode = "500", description = "Server unavailable")
+    @Tag(name = "BETA", description = "This API is currently in beta state")
+    @APIResponse(description = "The ping", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Oceano.class)))
+    public Boolean ping(){
+            
+        return oceanoRepository.ping().booleanValue();
     }
     
     

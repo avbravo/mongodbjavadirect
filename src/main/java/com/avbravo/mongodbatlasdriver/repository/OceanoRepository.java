@@ -6,6 +6,7 @@ package com.avbravo.mongodbatlasdriver.repository;
 
 import com.avbravo.jmoordb.core.annotation.Count;
 import com.avbravo.jmoordb.core.annotation.CountRegex;
+import com.avbravo.jmoordb.core.annotation.Ping;
 import com.avbravo.jmoordb.core.annotation.Query;
 import com.avbravo.jmoordb.core.annotation.QueryRegex;
 import com.avbravo.jmoordb.core.annotation.Repository;
@@ -59,4 +60,7 @@ public interface OceanoRepository {
     public Boolean update(Oceano oceano);
 
     public Boolean delete(String id);
+    
+    @Ping
+    public Boolean ping();
 }

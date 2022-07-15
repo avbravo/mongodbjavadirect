@@ -9,11 +9,11 @@ import com.avbravo.jmoordb.core.annotation.enumerations.ActivateSort;
 import com.avbravo.jmoordb.core.annotation.enumerations.CaseSensitive;
 import com.avbravo.jmoordb.core.annotation.enumerations.TypeOrder;
 import com.avbravo.jmoordb.core.pagination.Pagination;
-import com.avbravo.jmoordb.core.util.DocumentUtil;
 import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Oceano;
 import com.avbravo.mongodbatlasdriver.repository.OceanoRepository;
 import com.avbravo.mongodbatlasdriver.supplier.OceanoSupplier;
+import com.mongodb.MongoException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -31,6 +31,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
+import org.bson.BsonDocument;
+import org.bson.BsonInt64;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.eclipse.microprofile.config.Config;
@@ -515,6 +517,9 @@ public class OceanoRepositoryImpl implements OceanoRepository {
     }
     // </editor-fold>
 
+    
+    // <editor-fold defaultstate="collapsed" desc="List<Oceano> findByIdoceanoAndOceano(String idoceano, String oceano)">
+
     @Override
     public List<Oceano> findByIdoceanoAndOceano(String idoceano, String oceano) {
          List<Oceano> list = new ArrayList<>();
@@ -553,4 +558,33 @@ public class OceanoRepositoryImpl implements OceanoRepository {
 
         return list;
     }
+// </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="metodo">
+
+    @Override
+    public Boolean ping() {
+      Boolean conected =Boolean.FALSE;
+        try {
+
+            MongoDatabase database = mongoClient.getDatabase("world");
+
+           try {
+                Bson command = new BsonDocument("ping", new BsonInt64(1));
+                Document commandResult = database.runCommand(command);
+                System.out.println("Connected successfully to server.");
+                conected = Boolean.TRUE;
+            } catch (MongoException me) {
+                System.err.println("An error occurred while attempting to run a command: " + me);
+                  Test.error(Test.nameOfClassAndMethod() + " " + me.getLocalizedMessage());
+
+            }
+
+        } catch (Exception e) {
+            Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
+        }
+
+        return conected;
+    }
+    // </editor-fold>
 }
