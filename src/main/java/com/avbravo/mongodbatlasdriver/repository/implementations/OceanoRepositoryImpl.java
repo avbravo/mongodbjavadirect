@@ -216,7 +216,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
         return list;
     }
     // </editor-fold>
-// <editor-fold defaultstate="collapsed" desc="List<Oceano> jsonQuery(Document filter, Pagination pagination, Document... sort)">
+// <editor-fold defaultstate="collapsed" desc="List<Oceano> queryJSON(Document filter, Pagination pagination, Document... sort)">
 
     /**
      *
@@ -306,12 +306,13 @@ public class OceanoRepositoryImpl implements OceanoRepository {
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="List<Oceano> findRegex(String query)>
-    /**
-     *
-     * @param query
-     * @return
-     */
+    // <editor-fold defaultstate="collapsed" desc="List<Oceano> findRegex(String query)">
+ /**
+  * 
+  * @param value
+  * @param pagination
+  * @return 
+  */
     @Override
     public List<Oceano> findRegex(String value, Pagination pagination) {
         List<Oceano> list = new ArrayList<>();
@@ -401,7 +402,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
 
         return list;
     }
-    // </editor-fold>
+// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Integer countRegex(String value)">
     /**
@@ -513,4 +514,43 @@ public class OceanoRepositoryImpl implements OceanoRepository {
         return list;
     }
     // </editor-fold>
+
+    @Override
+    public List<Oceano> findByIdoceanoAndOceano(String idoceano, String oceano) {
+         List<Oceano> list = new ArrayList<>();
+        Document sortQuery = new Document();
+        try {
+            /**
+             * Leer la anotacion @QueryJSON
+             */
+
+            Document filter = new Document("idoceano",idoceano).append("oceano",oceano);
+
+            /**
+             * DataBase
+             */
+           
+            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoCollection<Document> collection = database.getCollection("oceano");
+            MongoCursor<Document> cursor;
+           
+
+                    cursor = collection.find(filter)
+                            .sort(sortQuery).iterator();
+           
+
+            try {
+                while (cursor.hasNext()) {
+                    list.add(oceanoSupplier.get(Oceano::new, cursor.next()));
+                }
+            } finally {
+                cursor.close();
+            }
+
+        } catch (Exception e) {
+            Test.error(Test.nameOfClassAndMethod() + " " + e.getLocalizedMessage());
+        }
+
+        return list;
+    }
 }

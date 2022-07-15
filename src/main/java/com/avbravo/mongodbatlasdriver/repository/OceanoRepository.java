@@ -30,38 +30,29 @@ public interface OceanoRepository {
     @Query()
     public List<Oceano> findAll();
 
-    @Query(where = "idoceano = :id")
+    @Query(where = "idoceano = @id")
     public Optional<Oceano> findById(String id);
 
-    @Query(where = "oceano = :oceano")
+    @Query(where = "oceano = @oceano")
     public List<Oceano> findByOceano(String oceano);
-    
-    @Query(where = "idoceano = :idoceano and oceano = :oceano")
-    public List<Oceano> findByOceano(String idoceano, String oceano);
-    
-    /**
-     * Implementa paginación
-     * @param oceano
-     * @param pagination
-     * @return 
-     */
-    @Query(where = "oceano = :oceano", activatePagination = ActivatePagination.ON, activateSort = ActivateSort.ON)
+
+    @Query(where = "idoceano = @idoceano and oceano = @oceano")
+    public List<Oceano> findByIdoceanoAndOceano(String idoceano, String oceano);
+
+    @Query(where = "oceano = @oceano", activatePagination = ActivatePagination.ON, activateSort = ActivateSort.ON)
     public List<Oceano> findByOceanoPagination(String oceano, Pagination pagination, Document sort);
-    
 
     @QueryJSON(activatePagination = ActivatePagination.ON, activateSort = ActivateSort.ON)
     public List<Oceano> queryJSON(Document filter, Pagination pagination, Document... sort);
-    
-        @QueryRegex(field = "oceano",activatePagination = ActivatePagination.ON, caseSensitive = CaseSensitive.NO,  typeOrder = TypeOrder.ASC)
-     public List<Oceano> findRegex(String value, Pagination pagination);
-    
+
+    @QueryRegex(field = "oceano", activatePagination = ActivatePagination.ON, caseSensitive = CaseSensitive.NO, typeOrder = TypeOrder.ASC)
+    public List<Oceano> findRegex(String value, Pagination pagination);
+
     @Count()
-    public Integer count(Document...query);
-    
-    
+    public Integer count(Document... query);
+
     @CountRegex(field = "oceano", caseSensitive = CaseSensitive.NO)
     public Integer countRegex(String value);
-    
 
     public Optional<Oceano> save(Oceano oceano);
 

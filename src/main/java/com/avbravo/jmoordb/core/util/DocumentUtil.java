@@ -6,10 +6,14 @@ package com.avbravo.jmoordb.core.util;
 
 import com.avbravo.jmoordb.core.annotation.Referenced;
 import com.avbravo.jmoordb.core.annotation.enumerations.TypePK;
+import com.mongodb.client.MongoClient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import org.bson.BsonDocument;
+import static org.bson.BsonDocumentWrapper.asBsonDocument;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 /**
  *
@@ -114,4 +118,19 @@ public class DocumentUtil {
     }
     // </editor-fold>
 
+    
+     // <editor-fold defaultstate="collapsed" desc="Bson createBsonBetweenDateWithoutHours(String fieldnamestart, Date datestartvalue, String fieldlimitname, Date datelimitvalue) {">
+    public static String bsonToJson(Bson filter){
+        String json="";
+        try {
+//            BsonDocument asBsonDocument =filter.toBsonDocument(BsonDocument.class,  MongoClient.getDefaultCodecRegistry());
+            BsonDocument asBsonDocument2 =filter.toBsonDocument(BsonDocument.class,  MongoClient.getDefaultCodecRegistry());
+json = asBsonDocument.toJson();
+        } catch (Exception e) {
+            
+        }
+        return json;
+    }
+    
+ // </editor-fold>
 }
