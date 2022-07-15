@@ -1,9 +1,12 @@
 package com.avbravo.mongodbatlasdriver.producer;
 
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import java.io.Serializable;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
@@ -20,8 +23,8 @@ public class MongoDBManagerProducer implements Serializable {
     @ConfigProperty(name = "mongodb.uri")
     private String mongodburi;
     @Inject
-    @ConfigProperty(name = "testconnection")
-    private Boolean testconnection;
+    @ConfigProperty(name = "mongodb.seconds.conecction")
+    private Integer mongodbSecondsConecction;
 
     
     
@@ -29,7 +32,13 @@ public class MongoDBManagerProducer implements Serializable {
     @ApplicationScoped
     public MongoClient mongoClient() {
 
-            MongoClient mongoClient = MongoClients.create(mongodburi);
+           // MongoClient mongoClient = MongoClients.create(mongodburi);
+               MongoClient mongoClient = MongoClients.create(
+                    MongoClientSettings.builder().applyConnectionString(new ConnectionString(mongodburi))
+                            .applyToSocketSettings(builder
+                                    -> builder.connectTimeout(mongodbSecondsConecction, SECONDS))
+                            .build());
+            
             System.out.println("@Produces :{Connected successfully to server.}");
         return mongoClient;
 

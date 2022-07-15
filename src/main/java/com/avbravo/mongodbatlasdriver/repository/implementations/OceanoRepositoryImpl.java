@@ -13,8 +13,11 @@ import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Oceano;
 import com.avbravo.mongodbatlasdriver.repository.OceanoRepository;
 import com.avbravo.mongodbatlasdriver.supplier.OceanoSupplier;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
@@ -26,6 +29,7 @@ import com.mongodb.client.result.UpdateResult;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import java.util.regex.Pattern;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -36,6 +40,7 @@ import org.bson.BsonInt64;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  *
@@ -48,9 +53,9 @@ public class OceanoRepositoryImpl implements OceanoRepository {
     // <editor-fold defaultstate="collapsed" desc="@Inject">
     @Inject
     private Config config;
-
-    @Inject
+     @Inject
     MongoClient mongoClient;
+
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Supplier">
     @Inject
@@ -263,8 +268,8 @@ public class OceanoRepositoryImpl implements OceanoRepository {
 
             } else {
 
-                    cursor = collection.find(filter)
-                            .sort(sortQuery).iterator();
+                cursor = collection.find(filter)
+                        .sort(sortQuery).iterator();
             }
 
             try {
@@ -288,7 +293,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
     public Integer count(Document... query) {
         Integer contador = 0;
         try {
-            Document whereCondition =new Document();
+            Document whereCondition = new Document();
             if (query.length != 0) {
                 whereCondition = query[0];
             }
@@ -297,7 +302,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
             if (whereCondition.isEmpty()) {
                 contador = (int) collection.countDocuments();
             } else {
-              //  Document docQuery = DocumentUtil.jsonToDocument(whereCondition);
+                //  Document docQuery = DocumentUtil.jsonToDocument(whereCondition);
                 contador = (int) collection.countDocuments(whereCondition);
             }
 
@@ -309,12 +314,12 @@ public class OceanoRepositoryImpl implements OceanoRepository {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="List<Oceano> findRegex(String query)">
- /**
-  * 
-  * @param value
-  * @param pagination
-  * @return 
-  */
+    /**
+     *
+     * @param value
+     * @param pagination
+     * @return
+     */
     @Override
     public List<Oceano> findRegex(String value, Pagination pagination) {
         List<Oceano> list = new ArrayList<>();
@@ -517,32 +522,27 @@ public class OceanoRepositoryImpl implements OceanoRepository {
     }
     // </editor-fold>
 
-    
     // <editor-fold defaultstate="collapsed" desc="List<Oceano> findByIdoceanoAndOceano(String idoceano, String oceano)">
-
     @Override
     public List<Oceano> findByIdoceanoAndOceano(String idoceano, String oceano) {
-         List<Oceano> list = new ArrayList<>();
+        List<Oceano> list = new ArrayList<>();
         Document sortQuery = new Document();
         try {
             /**
-             * Leer la anotacion @QueryJSON
+             * Leer la anotacion @Query
              */
 
-            Document filter = new Document("idoceano",idoceano).append("oceano",oceano);
+            Document filter = new Document("idoceano", idoceano).append("oceano", oceano);
 
             /**
              * DataBase
              */
-           
             MongoDatabase database = mongoClient.getDatabase("world");
             MongoCollection<Document> collection = database.getCollection("oceano");
             MongoCursor<Document> cursor;
-           
 
-                    cursor = collection.find(filter)
-                            .sort(sortQuery).iterator();
-           
+            cursor = collection.find(filter)
+                    .sort(sortQuery).iterator();
 
             try {
                 while (cursor.hasNext()) {
@@ -559,24 +559,22 @@ public class OceanoRepositoryImpl implements OceanoRepository {
         return list;
     }
 // </editor-fold>
-    
-    // <editor-fold defaultstate="collapsed" desc="metodo">
 
+    // <editor-fold defaultstate="collapsed" desc="metodo">
     @Override
     public Boolean ping() {
-      Boolean conected =Boolean.FALSE;
+        Boolean conected = Boolean.FALSE;
         try {
-
             MongoDatabase database = mongoClient.getDatabase("world");
 
-           try {
+            try {
                 Bson command = new BsonDocument("ping", new BsonInt64(1));
                 Document commandResult = database.runCommand(command);
                 System.out.println("Connected successfully to server.");
                 conected = Boolean.TRUE;
             } catch (MongoException me) {
                 System.err.println("An error occurred while attempting to run a command: " + me);
-                  Test.error(Test.nameOfClassAndMethod() + " " + me.getLocalizedMessage());
+                Test.error(Test.nameOfClassAndMethod() + " " + me.getLocalizedMessage());
 
             }
 
