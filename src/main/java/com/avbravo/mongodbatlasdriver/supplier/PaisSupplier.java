@@ -6,6 +6,7 @@ package com.avbravo.mongodbatlasdriver.supplier;
 
 import com.avbravo.jmoordb.core.annotation.Referenced;
 import com.avbravo.jmoordb.core.annotation.enumerations.TypePK;
+import com.avbravo.jmoordb.core.annotation.enumerations.TypeReferenced;
 import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Idioma;
 import com.avbravo.mongodbatlasdriver.model.Musica;
@@ -130,9 +131,9 @@ public class PaisSupplier implements Serializable {
                     return "planeta";
                 }
 
-                @Override
-                public boolean lazy() {
-                    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+              @Override
+                public TypeReferenced typeReferenced() {
+                   return TypeReferenced.REFERENCED;
                 }
 
                 @Override
@@ -196,9 +197,9 @@ public class PaisSupplier implements Serializable {
                     return "oceano";
                 }
 
-                @Override
-                public boolean lazy() {
-                    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+               @Override
+                public TypeReferenced typeReferenced() {
+                   return TypeReferenced.REFERENCED;
                 }
 
                 @Override

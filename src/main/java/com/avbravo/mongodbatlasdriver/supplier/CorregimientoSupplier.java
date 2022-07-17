@@ -6,6 +6,7 @@ package com.avbravo.mongodbatlasdriver.supplier;
 
 import com.avbravo.jmoordb.core.annotation.Referenced;
 import com.avbravo.jmoordb.core.annotation.enumerations.TypePK;
+import com.avbravo.jmoordb.core.annotation.enumerations.TypeReferenced;
 import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Corregimiento;
 import com.avbravo.mongodbatlasdriver.model.Provincia;
@@ -103,11 +104,7 @@ public class CorregimientoSupplier implements Serializable {
                     return "provincia";
                 }
 
-                @Override
-                public boolean lazy() {
-                    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-                }
-
+              
                 @Override
                 public Class<? extends Annotation> annotationType() {
                     throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -116,6 +113,11 @@ public class CorregimientoSupplier implements Serializable {
                 @Override
                 public TypePK typePK() {
                     return TypePK.STRING;
+                }
+
+                @Override
+                public TypeReferenced typeReferenced() {
+                   return TypeReferenced.REFERENCED;
                 }
 
                

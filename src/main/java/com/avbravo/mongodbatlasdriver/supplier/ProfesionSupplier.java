@@ -6,6 +6,7 @@ package com.avbravo.mongodbatlasdriver.supplier;
 
 import com.avbravo.jmoordb.core.annotation.Referenced;
 import com.avbravo.jmoordb.core.annotation.enumerations.TypePK;
+import com.avbravo.jmoordb.core.annotation.enumerations.TypeReferenced;
 import com.avbravo.jmoordb.core.util.DocumentUtil;
 import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Grupoprofesion;
@@ -73,8 +74,8 @@ GrupoProfesionSupplierServices grupoprofesionSupplierServices;
                 }
 
                 @Override
-                public boolean lazy() {
-                    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                public TypeReferenced typeReferenced() {
+                   return TypeReferenced.REFERENCED;
                 }
 
                 @Override

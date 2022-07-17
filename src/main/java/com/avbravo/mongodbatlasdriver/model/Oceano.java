@@ -19,7 +19,7 @@ public class Oceano {
 
     @Id
     private String idoceano;
-      private String oceano;
+    private String oceano;
 
     public Oceano() {
     }

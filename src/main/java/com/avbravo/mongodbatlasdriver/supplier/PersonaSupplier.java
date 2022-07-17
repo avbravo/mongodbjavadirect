@@ -6,6 +6,7 @@ package com.avbravo.mongodbatlasdriver.supplier;
 
 import com.avbravo.jmoordb.core.annotation.Referenced;
 import com.avbravo.jmoordb.core.annotation.enumerations.TypePK;
+import com.avbravo.jmoordb.core.annotation.enumerations.TypeReferenced;
 import com.avbravo.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Persona;
 import com.avbravo.mongodbatlasdriver.model.Corregimiento;
@@ -86,9 +87,9 @@ public class PersonaSupplier implements Serializable{
                     return "corregimiento";
                 }
 
-                @Override
-                public boolean lazy() {
-                    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+               @Override
+                public TypeReferenced typeReferenced() {
+                   return TypeReferenced.REFERENCED;
                 }
 
                 @Override
@@ -146,9 +147,9 @@ public class PersonaSupplier implements Serializable{
                     return "profesion";
                 }
 
-                @Override
-                public boolean lazy() {
-                    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+               @Override
+                public TypeReferenced typeReferenced() {
+                   return TypeReferenced.REFERENCED;
                 }
 
                 @Override
