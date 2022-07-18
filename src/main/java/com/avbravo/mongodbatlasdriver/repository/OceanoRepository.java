@@ -28,8 +28,8 @@ import com.avbravo.jmoordb.core.annotation.enumerations.TypeOrder;
  */
 @Repository(entity = Oceano.class, jakarta = false)
 public interface OceanoRepository {
-      @Mandatory
-    String getFirstName();
+//      @Mandatory
+//    String getFirstName();
     @Query()
     public List<Oceano> findAll();
 
