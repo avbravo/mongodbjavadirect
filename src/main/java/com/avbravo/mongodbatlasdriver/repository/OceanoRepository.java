@@ -6,6 +6,7 @@ package com.avbravo.mongodbatlasdriver.repository;
 
 import com.avbravo.jmoordb.core.annotation.Count;
 import com.avbravo.jmoordb.core.annotation.CountRegex;
+import com.avbravo.jmoordb.core.annotation.Mandatory;
 import com.avbravo.jmoordb.core.annotation.Ping;
 import com.avbravo.jmoordb.core.annotation.Query;
 import com.avbravo.jmoordb.core.annotation.QueryRegex;
@@ -27,7 +28,8 @@ import com.avbravo.jmoordb.core.annotation.enumerations.TypeOrder;
  */
 @Repository(entity = Oceano.class, jakarta = false)
 public interface OceanoRepository {
-
+      @Mandatory
+    String getFirstName();
     @Query()
     public List<Oceano> findAll();
 
