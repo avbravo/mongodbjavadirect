@@ -4,6 +4,7 @@
  */
 package com.avbravo.mongodbatlasdriver.model;
 
+import com.avbravo.jmoordb.core.annotation.Column;
 import javax.persistence.Id;
 
 /**
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 public class Country {
     @Id
     private String idcountry;
+    @Column
     private String country;
 
     public Country() {

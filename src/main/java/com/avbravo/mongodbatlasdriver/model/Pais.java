@@ -4,6 +4,7 @@
  */
 package com.avbravo.mongodbatlasdriver.model;
 
+import com.avbravo.jmoordb.core.annotation.Column;
 import com.avbravo.jmoordb.core.annotation.Embedded;
 import com.avbravo.jmoordb.core.annotation.Entity;
 import com.avbravo.jmoordb.core.annotation.Id;
@@ -20,6 +21,7 @@ public class Pais {
 
     @Id
     private String idpais;
+    @Column
     private String pais;
     @Embedded
     private Idioma idioma;

@@ -4,9 +4,9 @@
  */
 package com.avbravo.mongodbatlasdriver.model;
 
+import com.avbravo.jmoordb.core.annotation.Column;
 import com.avbravo.jmoordb.core.annotation.Entity;
 import com.avbravo.jmoordb.core.annotation.Id;
-import org.bson.types.ObjectId;
 
 
 
@@ -19,6 +19,7 @@ public class Oceano {
 
     @Id
     private String idoceano;
+    @Column
     private String oceano;
 
     public Oceano() {
