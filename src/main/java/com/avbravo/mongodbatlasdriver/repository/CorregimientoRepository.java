@@ -5,7 +5,7 @@
 package com.avbravo.mongodbatlasdriver.repository;
 
 import com.avbravo.jmoordb.core.annotation.Query;
-import com.avbravo.jmoordb.core.annotation.Repository;
+import com.avbravo.jmoordb.core.annotation.RepositoryMongoDB;
 import com.avbravo.mongodbatlasdriver.model.Corregimiento;
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +14,7 @@ import java.util.Optional;
  *
  * @author avbravo
  */
-@Repository(entity = Corregimiento.class, jakarta = false)
+@RepositoryMongoDB(entity = Corregimiento.class, jakarta = false)
 public interface CorregimientoRepository {
     @Query()
     public List<Corregimiento> findAll();
@@ -23,5 +23,5 @@ public interface CorregimientoRepository {
     @Query(where="corregimiento = :corregimiento")
     public List<Corregimiento> findByCorregimiento(String corregimiento);
     public Corregimiento save(Corregimiento corregimiento);
-    public void deleteById(String id);
+    public Boolean deleteById(String id);
 }

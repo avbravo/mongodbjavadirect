@@ -6,6 +6,7 @@ package com.avbravo.mongodbatlasdriver.repository;
 
 import com.avbravo.jmoordb.core.annotation.Query;
 import com.avbravo.jmoordb.core.annotation.Repository;
+import com.avbravo.jmoordb.core.annotation.RepositoryMongoDB;
 import com.avbravo.mongodbatlasdriver.model.Persona;
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +15,7 @@ import java.util.Optional;
  *
  * @author avbravo
  */
-@Repository(entity = Persona.class, jakarta = false)
+@RepositoryMongoDB(entity = Persona.class, jakarta = false)
 public interface PersonaRepository {
     @Query()
     public List<Persona> findAll();

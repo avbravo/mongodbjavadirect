@@ -94,7 +94,7 @@ public class CorregimientoRepositoryImpl implements CorregimientoRepository {
     }
 
     @Override
-    public void deleteById(String id) {
+    public Boolean deleteById(String id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import org.bson.Document;
 import com.avbravo.jmoordb.core.annotation.QueryJSON;
+import com.avbravo.jmoordb.core.annotation.RepositoryMongoDB;
 import com.avbravo.jmoordb.core.annotation.enumerations.CaseSensitive;
 import com.avbravo.jmoordb.core.annotation.enumerations.TypeOrder;
 
@@ -26,7 +27,7 @@ import com.avbravo.jmoordb.core.annotation.enumerations.TypeOrder;
  *
  * @author avbravo
  */
-@Repository(entity = Oceano.class, jakarta = false)
+@RepositoryMongoDB(entity = Oceano.class, jakarta = false)
 public interface OceanoRepository {
 //      @Mandatory
 //    String getFirstName();

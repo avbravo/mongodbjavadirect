@@ -95,7 +95,7 @@ public class ProfesionRepositoryImpl implements ProfesionRepository {
     }
 
     @Override
-    public void deleteById(String id) {
+    public Boolean deleteById(String id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
