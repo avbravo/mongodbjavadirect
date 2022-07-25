@@ -4,8 +4,8 @@
  */
 package com.avbravo.mongodbatlasdriver.repository;
 
-import com.avbravo.jmoordb.core.annotation.Query;
-import com.avbravo.jmoordb.core.annotation.RepositoryMongoDB;
+import com.jmoordb.core.annotation.repository.Query;
+import com.jmoordb.core.annotation.RepositoryMongoDB;
 import com.avbravo.mongodbatlasdriver.model.Grupoprofesion;
 import java.util.List;
 import java.util.Optional;

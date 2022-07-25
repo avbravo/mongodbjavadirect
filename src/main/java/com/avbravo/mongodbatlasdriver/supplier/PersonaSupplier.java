@@ -4,10 +4,10 @@
  */
 package com.avbravo.mongodbatlasdriver.supplier;
 
-import com.avbravo.jmoordb.core.annotation.Referenced;
-import com.avbravo.jmoordb.core.annotation.enumerations.TypePK;
-import com.avbravo.jmoordb.core.annotation.enumerations.TypeReferenced;
-import com.avbravo.jmoordb.core.util.Test;
+import com.jmoordb.core.annotation.Referenced;
+import com.jmoordb.core.annotation.enumerations.TypePK;
+import com.jmoordb.core.annotation.enumerations.TypeReferenced;
+import com.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Persona;
 import com.avbravo.mongodbatlasdriver.model.Corregimiento;
 import com.avbravo.mongodbatlasdriver.model.Profesion;

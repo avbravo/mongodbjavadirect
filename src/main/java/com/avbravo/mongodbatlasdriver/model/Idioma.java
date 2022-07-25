@@ -4,7 +4,7 @@
  */
 package com.avbravo.mongodbatlasdriver.model;
 
-import com.avbravo.jmoordb.core.annotation.DocumentEmbeddable;
+import com.jmoordb.core.annotation.DocumentEmbeddable;
 
 
 

@@ -4,7 +4,7 @@
  */
 package com.avbravo.mongodbatlasdriver.controller;
 
-import com.avbravo.jmoordb.core.util.Test;
+import com.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Provincia;
 import com.avbravo.mongodbatlasdriver.repository.ProvinciaRepository;
 import java.util.ArrayList;

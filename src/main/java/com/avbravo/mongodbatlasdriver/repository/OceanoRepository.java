@@ -4,24 +4,24 @@
  */
 package com.avbravo.mongodbatlasdriver.repository;
 
-import com.avbravo.jmoordb.core.annotation.Count;
-import com.avbravo.jmoordb.core.annotation.CountRegex;
-import com.avbravo.jmoordb.core.annotation.Mandatory;
-import com.avbravo.jmoordb.core.annotation.Ping;
-import com.avbravo.jmoordb.core.annotation.Query;
-import com.avbravo.jmoordb.core.annotation.QueryRegex;
-import com.avbravo.jmoordb.core.annotation.Repository;
-import com.avbravo.jmoordb.core.annotation.enumerations.ActivatePagination;
-import com.avbravo.jmoordb.core.annotation.enumerations.ActivateSort;
-import com.avbravo.jmoordb.core.pagination.Pagination;
+import com.jmoordb.core.annotation.repository.Count;
+import com.jmoordb.core.annotation.repository.CountRegex;
+import com.jmoordb.core.annotation.Mandatory;
+import com.jmoordb.core.annotation.repository.Ping;
+import com.jmoordb.core.annotation.repository.Query;
+import com.jmoordb.core.annotation.repository.QueryRegex;
+import com.jmoordb.core.annotation.repository.Repository;
+import com.jmoordb.core.annotation.enumerations.ActivatePagination;
+import com.jmoordb.core.annotation.enumerations.ActivateSort;
+import com.jmoordb.core.pagination.Pagination;
 import com.avbravo.mongodbatlasdriver.model.Oceano;
 import java.util.List;
 import java.util.Optional;
 import org.bson.Document;
-import com.avbravo.jmoordb.core.annotation.QueryJSON;
-import com.avbravo.jmoordb.core.annotation.RepositoryMongoDB;
-import com.avbravo.jmoordb.core.annotation.enumerations.CaseSensitive;
-import com.avbravo.jmoordb.core.annotation.enumerations.TypeOrder;
+import com.jmoordb.core.annotation.repository.QueryJSON;
+import com.jmoordb.core.annotation.RepositoryMongoDB;
+import com.jmoordb.core.annotation.enumerations.CaseSensitive;
+import com.jmoordb.core.annotation.enumerations.TypeOrder;
 
 /**
  *

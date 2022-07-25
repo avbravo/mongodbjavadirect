@@ -4,7 +4,7 @@
  */
 package com.avbravo.mongodbatlasdriver.repository.implementations;
 
-import com.avbravo.jmoordb.core.util.Test;
+import com.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Corregimiento;
 import com.avbravo.mongodbatlasdriver.repository.CorregimientoRepository;
 import com.avbravo.mongodbatlasdriver.supplier.CorregimientoSupplier;

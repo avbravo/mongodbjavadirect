@@ -4,12 +4,12 @@
  */
 package com.avbravo.mongodbatlasdriver.repository.implementations;
 
-import com.avbravo.jmoordb.core.annotation.enumerations.ActivatePagination;
-import com.avbravo.jmoordb.core.annotation.enumerations.ActivateSort;
-import com.avbravo.jmoordb.core.annotation.enumerations.CaseSensitive;
-import com.avbravo.jmoordb.core.annotation.enumerations.TypeOrder;
-import com.avbravo.jmoordb.core.pagination.Pagination;
-import com.avbravo.jmoordb.core.util.Test;
+import com.jmoordb.core.annotation.enumerations.ActivatePagination;
+import com.jmoordb.core.annotation.enumerations.ActivateSort;
+import com.jmoordb.core.annotation.enumerations.CaseSensitive;
+import com.jmoordb.core.annotation.enumerations.TypeOrder;
+import com.jmoordb.core.pagination.Pagination;
+import com.jmoordb.core.util.Test;
 import com.avbravo.mongodbatlasdriver.model.Oceano;
 import com.avbravo.mongodbatlasdriver.repository.OceanoRepository;
 import com.avbravo.mongodbatlasdriver.supplier.OceanoSupplier;

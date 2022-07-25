@@ -4,7 +4,7 @@
  */
 package com.avbravo.mongodbatlasdriver.model;
 
-import com.avbravo.jmoordb.core.annotation.Column;
+import com.jmoordb.core.annotation.Column;
 import javax.persistence.Id;
 
 /**
