@@ -38,7 +38,9 @@ public class PaisRepositoryImpl implements PaisRepository {
     @Inject
     @ConfigProperty(name = "mongodb.uri")
     private String mongodburi;
-
+     @Inject
+    @ConfigProperty(name = "mongodb.database")
+       private String mongodbDatabase;
     @Inject
     MongoClient mongoClient;
 // </editor-fold>
@@ -56,7 +58,7 @@ public class PaisRepositoryImpl implements PaisRepository {
 
         List<Pais> list = new ArrayList<>();
         try {
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("pais");
 
             /**
@@ -84,7 +86,7 @@ public class PaisRepositoryImpl implements PaisRepository {
     public Optional<Pais> findById(String id) {
 
         try {
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("pais");
             Document doc = collection.find(eq("idpais", id)).first();
 

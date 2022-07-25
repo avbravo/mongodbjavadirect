@@ -7,6 +7,7 @@ package com.avbravo.mongodbatlasdriver.repository;
 import com.jmoordb.core.annotation.repository.Query;
 import com.jmoordb.core.annotation.RepositoryMongoDB;
 import com.avbravo.mongodbatlasdriver.model.Grupoprofesion;
+import com.jmoordb.core.annotation.enumerations.JakartaSource;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +15,7 @@ import java.util.Optional;
  *
  * @author avbravo
  */
-@RepositoryMongoDB(entity = Grupoprofesion.class,jakarta = false)
+@RepositoryMongoDB(entity = Grupoprofesion.class,jakartaSource = JakartaSource.JAVAEE_LEGACY)
 public interface GrupoprofesionRepository {            
     @Query()
     public List<Grupoprofesion> findAll();    

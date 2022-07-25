@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  *
@@ -37,7 +38,9 @@ public class ProfesionRepositoryImpl implements ProfesionRepository {
 
     @Inject
     private Config config;
-
+     @Inject
+    @ConfigProperty(name = "mongodb.database")
+       private String mongodbDatabase;
     @Inject
     MongoClient mongoClient;
 // </editor-fold>
@@ -53,7 +56,7 @@ public class ProfesionRepositoryImpl implements ProfesionRepository {
       List<Profesion> list = new ArrayList<>();
         try {
         
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("profesion");
             
               MongoCursor<Document> cursor = collection.find().iterator();
@@ -75,7 +78,7 @@ public class ProfesionRepositoryImpl implements ProfesionRepository {
     public Optional<Profesion> findById(String id) {
 
         try {
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("profesion");
             Document doc = collection.find(eq("idprofesion", id)).first();
            

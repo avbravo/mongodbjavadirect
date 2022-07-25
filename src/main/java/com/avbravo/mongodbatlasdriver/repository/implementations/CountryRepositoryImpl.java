@@ -35,7 +35,9 @@ public class CountryRepositoryImpl implements CountryRepository {
 
     @Inject
     private Config config;
-
+     @Inject
+    @ConfigProperty(name = "mongodb.database")
+       private String mongodbDatabase;
     @Inject
     @ConfigProperty(name = "mongodb.uri")
     private String mongodburi;

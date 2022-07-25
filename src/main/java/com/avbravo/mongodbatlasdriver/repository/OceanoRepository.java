@@ -21,13 +21,14 @@ import org.bson.Document;
 import com.jmoordb.core.annotation.repository.QueryJSON;
 import com.jmoordb.core.annotation.RepositoryMongoDB;
 import com.jmoordb.core.annotation.enumerations.CaseSensitive;
+import com.jmoordb.core.annotation.enumerations.JakartaSource;
 import com.jmoordb.core.annotation.enumerations.TypeOrder;
 
 /**
  *
  * @author avbravo
  */
-@RepositoryMongoDB(entity = Oceano.class, jakarta = false)
+@RepositoryMongoDB(entity = Oceano.class,jakartaSource = JakartaSource.JAVAEE_LEGACY)
 public interface OceanoRepository {
 //      @Mandatory
 //    String getFirstName();

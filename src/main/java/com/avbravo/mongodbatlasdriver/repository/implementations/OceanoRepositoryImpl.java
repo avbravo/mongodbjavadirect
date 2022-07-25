@@ -55,7 +55,15 @@ public class OceanoRepositoryImpl implements OceanoRepository {
     private Config config;
      @Inject
     MongoClient mongoClient;
-
+     /**
+      * Lee de la configuracion el nombre de la base de datos
+      * que se especifica en @Repository(database={})
+      */
+// Lee de la configuracion el nombre de la base de datos
+     
+       @Inject
+    @ConfigProperty(name = "mongodb.database")
+       private String mongodbDatabase;
 // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Supplier">
     @Inject
@@ -69,7 +77,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
         List<Oceano> list = new ArrayList<>();
         try {
 
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
 
             MongoCollection<Document> collection = database.getCollection("oceano");
 
@@ -101,7 +109,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
     public Optional<Oceano> findById(String id) {
 
         try {
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("oceano");
             Document doc = collection.find(eq("idoceano", id)).first();
 
@@ -120,7 +128,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
     @Override
     public Optional<Oceano> save(Oceano oceano) {
         try {
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("oceano");
 
             if (findById(oceano.getIdoceano()).isPresent()) {
@@ -148,7 +156,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
     @Override
     public Boolean update(Oceano oceano) {
         try {
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("oceano");
 
             if (!findById(oceano.getIdoceano()).isPresent()) {
@@ -180,7 +188,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
     @Override
     public Boolean delete(String id) {
         try {
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("oceano");
             Bson filter = Filters.eq("idoceano", id);
             DeleteResult deleteResult = collection.deleteOne(filter);
@@ -203,7 +211,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
     public List<Oceano> findByOceano(String oceano) {
         List<Oceano> list = new ArrayList<>();
         try {
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("oceano");
 
             MongoCursor<Document> cursor = collection.find(eq("oceano", oceano)).iterator();
@@ -253,7 +261,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
                     sortQuery = sort[0];
                 }
             }
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("oceano");
             MongoCursor<Document> cursor;
             if (activatePagination == ActivatePagination.ON) {
@@ -297,7 +305,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
             if (query.length != 0) {
                 whereCondition = query[0];
             }
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("oceano");
             if (whereCondition.isEmpty()) {
                 contador = (int) collection.countDocuments();
@@ -334,7 +342,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
             /**
              * DataBase
              */
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("oceano");
 
             /**
@@ -430,7 +438,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
             /**
              * Leer la base de datos
              */
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
 
             MongoCollection<Document> collection = database.getCollection("oceano");
 
@@ -480,7 +488,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
             CaseSensitive caseSensitive = CaseSensitive.NO;
             TypeOrder typeOrder = TypeOrder.ASC;
 
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("oceano");
 
             /**
@@ -537,7 +545,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
             /**
              * DataBase
              */
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("oceano");
             MongoCursor<Document> cursor;
 
@@ -565,7 +573,7 @@ public class OceanoRepositoryImpl implements OceanoRepository {
     public Boolean ping() {
         Boolean conected = Boolean.FALSE;
         try {
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
 
             try {
                 Bson command = new BsonDocument("ping", new BsonInt64(1));

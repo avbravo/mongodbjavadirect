@@ -22,6 +22,7 @@ import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import org.bson.Document;
 import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  *
@@ -38,7 +39,9 @@ public class GrupoProfesionRepositoryImpl implements GrupoprofesionRepository {
 
     @Inject
     private Config config;
-
+     @Inject
+    @ConfigProperty(name = "mongodb.database")
+       private String mongodbDatabase;
     @Inject
     MongoClient mongoClient;
 // </editor-fold>
@@ -51,7 +54,7 @@ public class GrupoProfesionRepositoryImpl implements GrupoprofesionRepository {
         List<Grupoprofesion> list = new ArrayList<>();
         try {
 
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
      
             MongoCollection<Document> collection = database.getCollection("grupoprofesion");
 
@@ -77,7 +80,7 @@ public class GrupoProfesionRepositoryImpl implements GrupoprofesionRepository {
     public Optional<Grupoprofesion> findById(String id) {
 
         try {
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("grupoprofesion");
             Document doc = collection.find(eq("idgrupoprofesion", id)).first();
            

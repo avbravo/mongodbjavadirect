@@ -20,6 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.bson.Document;
 import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  *
@@ -36,7 +37,9 @@ public class CorregimientoRepositoryImpl implements CorregimientoRepository {
 
     @Inject
     private Config config;
-
+     @Inject
+    @ConfigProperty(name = "mongodb.database")
+       private String mongodbDatabase;
     @Inject
     MongoClient mongoClient;
 // </editor-fold>
@@ -48,7 +51,7 @@ public class CorregimientoRepositoryImpl implements CorregimientoRepository {
         List<Corregimiento> list = new ArrayList<>();
         try {
 
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("corregimiento");
 
             MongoCursor<Document> cursor = collection.find().iterator();
@@ -74,7 +77,7 @@ public class CorregimientoRepositoryImpl implements CorregimientoRepository {
     public Optional<Corregimiento> findById(String id) {
 
         try {
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("corregimiento");
             Document doc = collection.find(eq("idcorregimiento", id)).first();
 

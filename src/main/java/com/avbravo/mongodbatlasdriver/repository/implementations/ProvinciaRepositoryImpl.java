@@ -20,6 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.bson.Document;
 import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  *
@@ -33,7 +34,9 @@ public class ProvinciaRepositoryImpl implements ProvinciaRepository {
 
     @Inject
     private Config config;
-
+     @Inject
+    @ConfigProperty(name = "mongodb.database")
+       private String mongodbDatabase;
     @Inject
     MongoClient mongoClient;
 // </editor-fold>
@@ -49,7 +52,7 @@ public class ProvinciaRepositoryImpl implements ProvinciaRepository {
       List<Provincia> list = new ArrayList<>();
         try {
            
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("provincia");
               /**
              * Ejecuta la consulta
@@ -74,7 +77,7 @@ public class ProvinciaRepositoryImpl implements ProvinciaRepository {
     public Optional<Provincia> findById(String id) {
 
         try {
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("provincia");
             Document doc = collection.find(eq("idprovincia", id)).first();
            

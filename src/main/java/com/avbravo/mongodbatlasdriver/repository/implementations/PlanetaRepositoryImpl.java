@@ -22,6 +22,7 @@ import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import org.bson.Document;
 import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  *
@@ -35,7 +36,9 @@ public class PlanetaRepositoryImpl implements PlanetaRepository {
 
     @Inject
     private Config config;
-
+     @Inject
+    @ConfigProperty(name = "mongodb.database")
+       private String mongodbDatabase;
     @Inject
     MongoClient mongoClient;
 // </editor-fold>
@@ -52,7 +55,7 @@ public class PlanetaRepositoryImpl implements PlanetaRepository {
         List<Planeta> list = new ArrayList<>();
         try {
 
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
      
             MongoCollection<Document> collection = database.getCollection("planeta");
             /**
@@ -83,7 +86,7 @@ public class PlanetaRepositoryImpl implements PlanetaRepository {
     public Optional<Planeta> findById(String id) {
 
         try {
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("planeta");
             /**
              * Es una entidad de nivel 0

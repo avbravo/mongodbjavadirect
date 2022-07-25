@@ -26,20 +26,18 @@ public class MongoDBManagerProducer implements Serializable {
     @ConfigProperty(name = "mongodb.seconds.conecction")
     private Integer mongodbSecondsConecction;
 
-    
-    
     @Produces
     @ApplicationScoped
     public MongoClient mongoClient() {
 
-           // MongoClient mongoClient = MongoClients.create(mongodburi);
-               MongoClient mongoClient = MongoClients.create(
-                    MongoClientSettings.builder().applyConnectionString(new ConnectionString(mongodburi))
-                            .applyToSocketSettings(builder
-                                    -> builder.connectTimeout(mongodbSecondsConecction, SECONDS))
-                            .build());
-            
-            System.out.println("@Produces :{Connected successfully to server.}");
+        // MongoClient mongoClient = MongoClients.create(mongodburi);
+        MongoClient mongoClient = MongoClients.create(
+                MongoClientSettings.builder().applyConnectionString(new ConnectionString(mongodburi))
+                        .applyToSocketSettings(builder
+                                -> builder.connectTimeout(mongodbSecondsConecction, SECONDS))
+                        .build());
+
+        System.out.println("@Produces :{Connected successfully to server.}");
         return mongoClient;
 
     }

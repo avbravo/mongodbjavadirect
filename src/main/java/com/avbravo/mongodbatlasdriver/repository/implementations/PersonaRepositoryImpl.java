@@ -20,6 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.bson.Document;
 import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  *
@@ -33,7 +34,9 @@ public class PersonaRepositoryImpl implements PersonaRepository {
 
     @Inject
     private Config config;
-
+     @Inject
+    @ConfigProperty(name = "mongodb.database")
+       private String mongodbDatabase;
     @Inject
     MongoClient mongoClient;
 // </editor-fold>
@@ -49,7 +52,7 @@ public class PersonaRepositoryImpl implements PersonaRepository {
       List<Persona> list = new ArrayList<>();
         try {
         
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("persona");
             
        
@@ -72,7 +75,7 @@ public class PersonaRepositoryImpl implements PersonaRepository {
     public Optional<Persona> findById(String id) {
 
         try {
-            MongoDatabase database = mongoClient.getDatabase("world");
+            MongoDatabase database = mongoClient.getDatabase(mongodbDatabase);
             MongoCollection<Document> collection = database.getCollection("persona");
             Document doc = collection.find(eq("idpersona", id)).first();
            

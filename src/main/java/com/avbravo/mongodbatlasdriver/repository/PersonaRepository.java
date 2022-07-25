@@ -8,6 +8,7 @@ import com.jmoordb.core.annotation.repository.Query;
 import com.jmoordb.core.annotation.repository.Repository;
 import com.jmoordb.core.annotation.RepositoryMongoDB;
 import com.avbravo.mongodbatlasdriver.model.Persona;
+import com.jmoordb.core.annotation.enumerations.JakartaSource;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +16,7 @@ import java.util.Optional;
  *
  * @author avbravo
  */
-@RepositoryMongoDB(entity = Persona.class, jakarta = false)
+@RepositoryMongoDB(entity = Persona.class,jakartaSource = JakartaSource.JAVAEE_LEGACY)
 public interface PersonaRepository {
     @Query()
     public List<Persona> findAll();
